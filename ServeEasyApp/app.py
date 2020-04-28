@@ -16,7 +16,19 @@ mysql = MySQL(app)
 
 @app.route('/home')
 def home():
-    return render_template('home.html')
+    try:  
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from design_products;")
+        design_products = cursor.fetchall()
+        cursor.execute("SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from programming_products;")
+        programming_products = cursor.fetchall()
+        cursor.execute("SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from freestyle_products;")
+        freestyle_products = cursor.fetchall()
+        cursor.execute("SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from physical_products;")
+        physical_products = cursor.fetchall()
+        return render_template('home.html',physical_products=physical_products,freestyle_products=freestyle_products,design_products=design_products,programming_products=programming_products)
+    except Exception as e:
+        return str(e)
 
 @app.route('/sign_in',methods=['POST','GET'])
 def sign_in():
