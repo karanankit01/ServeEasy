@@ -1,5 +1,6 @@
 from flask import Flask,render_template,request,redirect
 from flask_mysqldb import MySQL
+import MySQLdb
 
 
 app=Flask(__name__)
@@ -17,8 +18,8 @@ mysql = MySQL(app)
 def home():
     return render_template('home.html')
 
-@app.route('/login',methods=['POST','GET'])
-def login():
+@app.route('/sign_in',methods=['POST','GET'])
+def sign_in():
     if(request.method=='POST'):
         user_details = request.form
         name = user_details['name']
@@ -32,8 +33,48 @@ def login():
         cur.close()
         
         return redirect('/home')
-    return render_template('login.html')
+    return render_template('sign_in.html')
 
+
+@app.route('/products/programming',methods=['GET'])
+def programming_products():
+    try:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from programming_products;")
+        programming_products = cursor.fetchall()
+        return render_template('programming_products.html',programming_products=programming_products)
+    except Exception as e:
+        return str(e)
+    
+@app.route('/products/freestyle',methods=['GET'])
+def freestyle_products():
+    try:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from freestyle_products;")
+        freestyle_products = cursor.fetchall()
+        return render_template('freestyle_products.html',freestyle_products=freestyle_products)
+    except Exception as e:
+        return str(e)
+
+@app.route('/products/design',methods=['GET'])
+def design_products():
+    try:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from design_products;")
+        design_products = cursor.fetchall()
+        return render_template('design_products.html',design_products=design_products)
+    except Exception as e:
+        return str(e)
+
+@app.route('/products/physical',methods=['GET'])
+def physical_products():
+    try:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from physical_products;")
+        physical_products = cursor.fetchall()
+        return render_template('physical_products.html',physical_products=physical_products)
+    except Exception as e:
+        return str(e)
 
 if __name__=='__main__':
     app.run(debug=True)
