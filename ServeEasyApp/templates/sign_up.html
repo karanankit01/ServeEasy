@@ -2,19 +2,25 @@
 
 
 {%  block head %}
-<title> sign_in </title>
+<title> sign_up </title>
 {% endblock %}
 
 
 {%  block body %}
 <br>
-<h1>sign_in page</h1>
+<h1>sign_up page</h1>
 <br>
 
 <form method='POST' action='/sign_in' >
+    name <input type='text' name='name'>
+    <br>
     username <input type='text' name='username'>
     <br>
+    email <input type='text' name='email'>
+    <br>
     password <input type='text' name='password'>
+    <br>
+    phone <input type='number' default=0 name='phone'> 
     <br>
     <input type='submit' class='btn bg-drak'>
 </form>

@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+
+{%  block head %}
+<title> all products </title>
+{% endblock %}
+
+
+{%  block body %}
+<br>
+<h1>all products</h1>
+<br>
+<br>
+<h1>design</h1>
+<br>
+{% for product in design_products %}
+<div class="shadow-lg border border-dark p-5 bg-white panel panel-primary">
+    <h2> {{ product.product_name }} </h2>
+    <small>estimated price {{product.est_price }} with rating {{product.average_rating}} by {{product.no_of_time}} persons</small>
+
+    <br>
+    <p style="white-space:pre-wrap"> decription about the product(to be added in data base) </p>
+    <a class="btn btn-dark" href='#'>buy</a>
+    <a class="btn btn-dark" href='#'>like</a>
+</div>
+<br>
+{% endfor %}
+
+
+
+<br>
+<h1>physical</h1>
+<br>
+{% for product in physical_products %}
+<div class="shadow-lg border border-dark p-5 bg-white panel panel-primary">
+    <h2> {{ product.product_name }} </h2>
+    <small>estimated price {{product.est_price }} with rating {{product.average_rating}} by {{product.no_of_time}} persons</small>
+
+    <br>
+    <p style="white-space:pre-wrap"> decription about the product(to be added in data base) </p>
+    <a class="btn btn-dark" href='#'>buy</a>
+    <a class="btn btn-dark" href='#'>like</a>
+</div>
+<br>
+{% endfor %}
+
+
+<br>
+<h1>freestyle</h1>
+<br>
+{% for product in freestyle_products %}
+<div class="shadow-lg border border-dark p-5 bg-white panel panel-primary">
+    <h2> {{ product.product_name }} </h2>
+    <small>estimated price {{product.est_price }} with rating {{product.average_rating}} by {{product.no_of_time}} persons</small>
+
+    <br>
+    <p style="white-space:pre-wrap"> decription about the product(to be added in data base) </p>
+    <a class="btn btn-dark" href='#'>buy</a>
+    <a class="btn btn-dark" href='#'>like</a>
+</div>
+<br>
+{% endfor %}
+
+
+<br>
+<h1>programming</h1>
+<br>
+{% for product in programming_products %}
+<div class="shadow-lg border border-dark p-5 bg-white panel panel-primary">
+    <h2> {{ product.product_name }} </h2>
+    <small>estimated price {{product.est_price }} with rating {{product.average_rating}} by {{product.no_of_time}} persons</small>
+
+    <br>
+    <p style="white-space:pre-wrap"> decription about the product(to be added in data base) </p>
+
+    <a class="btn btn-dark" href='#'>buy</a>
+    <a class="btn btn-dark" href='#'>like</a>
+</div>
+<br>
+{%  endfor %}
+{% endblock %}
