@@ -7,6 +7,61 @@
 
 
 {%  block body %}
+<nav class="navbar navbar-dark bg-dark">
+    {% set url = '/home' %}
+    {% set id = user_details[0].user_id %}
+    {% if user_details %}
+        {% set url = url + id|string %}
+    {% endif %}
+    <a class="navbar-brand" href="{{ url }}">ServeEasy</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample01"
+        aria-controls="navbarsExample01" aria-expanded="false" aria-label="Toggle navigation">
+        {% if user_details %}
+            <small>{{ user_details[0].username }} </small>
+        {% endif %}
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarsExample01">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="/sign_up" tabindex="-1" aria-disabled="true">sign_up</a> 
+                <a class="nav-link " href="/sign_in" tabindex="-1" aria-disabled="true">sign_in</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">about</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">Products</a>
+                <div class="dropdown-menu" aria-labelledby="dropdown01">
+                    {% if user_details %}
+                        <a class="dropdown-item" href=  "/products/all/{{ user_details[0].user_id }}">all</a>
+                        <a class="dropdown-item" href="/products/programming/{{ user_details[0].user_id }}">Programming</a>
+                        <a class="dropdown-item" href="/products/freestyle/{{ user_details[0].user_id }}">Freestyle</a>
+                        <a class="dropdown-item" href="/products/design/{{ user_details[0].user_id }}">Design</a>
+                        <a class="dropdown-item" href="/products/physical/{{ user_details[0].user_id }}">Physical</a>
+                    {% else %}
+                        <a class="dropdown-item" href=  "/products/all/-1">all</a>
+                        <a class="dropdown-item" href="/products/programming/-1">Programming</a>
+                        <a class="dropdown-item" href="/products/freestyle/-1">Freestyle</a>
+                        <a class="dropdown-item" href="/products/design/-1">Design</a>
+                        <a class="dropdown-item" href="/products/physical/-1">Physical</a>
+                    {% endif %}
+                </div>
+            </li>
+        </ul>
+        <form class="form-inline my-2 my-md-0">
+            <input class="form-control" type="text" placeholder="Search" aria-label="Search">
+        </form>
+    </div>
+</nav>
+
+
+<div class="container">
 <br>
 <h1>physical</h1>
 <br>
@@ -23,5 +78,5 @@
 <br>
 {% endfor %}
 
-
+</div>
 {% endblock %}

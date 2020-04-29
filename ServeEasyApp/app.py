@@ -14,32 +14,16 @@ app.config['MYSQL_DB'] = db['mysql_db']
 mysql = MySQL(app)
 
 
-@app.route('/product/all')
-def all_product():
-    try:  
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute("SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from design_products;")
-        design_products = cursor.fetchall()
-        cursor.execute("SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from programming_products;")
-        programming_products = cursor.fetchall()
-        cursor.execute("SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from freestyle_products;")
-        freestyle_products = cursor.fetchall()
-        cursor.execute("SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from physical_products;")
-        physical_products = cursor.fetchall()
-        return render_template('all_product.html',physical_products=physical_products,freestyle_products=freestyle_products,design_products=design_products,programming_products=programming_products)
-    except Exception as e:
-        return str(e)
-
+user_details=()
 @app.route('/home')
 def home():
-    return render_template('home.html')
+    return render_template('home.html',user_details=())
 
 @app.route('/home/<int:user_id>')
 def user_home(user_id):
     try:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        query="SELECT name,username,email,phone from user where user_id = "+str(user_id)
-        print(query)
+        query="SELECT name,username,email,phone,user_id from user where user_id = "+str(user_id)
         cursor.execute(query)
         user_details = cursor.fetchall()
         return render_template('home.html',user_details=user_details)
@@ -77,54 +61,103 @@ def sign_in():
             query="SELECT user_id AS user_id ,password AS password FROM user WHERE username ="+"'"+username+"'"
             cursor.execute(query)
             password_id_details = cursor.fetchall()
-            print(type(password_id_details))
+            print(password_id_details)
             if(len(password_id_details)==0):
                 return "user dosn't exist try another or sign up"
             else:
-                url_for_user_home='/home/'+str(password_id_details[0]['user_id'])
-                return redirect(url_for_user_home)
+                if(user_password==password_id_details[0]['password']):
+                    
+                    url_for_user_home='/home/'+str(password_id_details[0]['user_id'])
+                    return redirect(url_for_user_home)
+                else:
+                    return "wrong password try again"
         except Exception as e:
             return str(e)
     return render_template('sign_in.html')
 
+@app.route('/products/all/<int:user_id>')
+def all_product(user_id):
+    try:  
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from design_products;")
+        design_products = cursor.fetchall()
+        cursor.execute("SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from programming_products;")
+        programming_products = cursor.fetchall()
+        cursor.execute("SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from freestyle_products;")
+        freestyle_products = cursor.fetchall()
+        cursor.execute("SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from physical_products;")
+        physical_products = cursor.fetchall()
+        if(user_id!=-1):
+            query="SELECT name,username,email,phone,user_id from user where user_id = "+str(user_id)
+            cursor.execute(query)
+            user_details = cursor.fetchall()
+        else:
+            user_details=()
+        return render_template('all_product.html',user_details=user_details,physical_products=physical_products,freestyle_products=freestyle_products,design_products=design_products,programming_products=programming_products)
+    except Exception as e:
+        return str(e)
 
-@app.route('/products/programming',methods=['GET'])
-def programming_products():
+@app.route('/products/programming/<int:user_id>',methods=['GET'])
+def programming_products(user_id):
     try:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute("SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from programming_products;")
         programming_products = cursor.fetchall()
-        return render_template('programming_products.html',programming_products=programming_products)
+        if(user_id!=-1):
+            query="SELECT name,username,email,phone,user_id from user where user_id = "+str(user_id)
+            cursor.execute(query)
+            user_details = cursor.fetchall()
+        else:
+            user_details=()
+        return render_template('programming_products.html',user_details=user_details,programming_products=programming_products)
     except Exception as e:
         return str(e)
     
-@app.route('/products/freestyle',methods=['GET'])
-def freestyle_products():
+@app.route('/products/freestyle/<int:user_id>',methods=['GET'])
+def freestyle_products(user_id):
     try:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute("SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from freestyle_products;")
         freestyle_products = cursor.fetchall()
-        return render_template('freestyle_products.html',freestyle_products=freestyle_products)
+        if(user_id!=-1):
+            query="SELECT name,username,email,phone,user_id from user where user_id = "+str(user_id)
+            cursor.execute(query)
+            user_details = cursor.fetchall()
+        else:
+            user_details=()
+        return render_template('freestyle_products.html',user_details=user_details,freestyle_products=freestyle_products)
     except Exception as e:
         return str(e)
 
-@app.route('/products/design',methods=['GET'])
-def design_products():
+@app.route('/products/design/<int:user_id>',methods=['GET'])
+def design_products(user_id):
     try:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute("SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from design_products;")
         design_products = cursor.fetchall()
-        return render_template('design_products.html',design_products=design_products)
+        if(user_id!=-1):
+            query="SELECT name,username,email,phone,user_id from user where user_id = "+str(user_id)
+            cursor.execute(query)
+            user_details = cursor.fetchall()
+        else:
+            user_details=()
+        return render_template('design_products.html',user_details=user_details,design_products=design_products)
     except Exception as e:
         return str(e)
 
-@app.route('/products/physical',methods=['GET'])
-def physical_products():
+@app.route('/products/physical/<int:user_id>',methods=['GET'])
+def physical_products(user_id):
     try:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute("SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from physical_products;")
         physical_products = cursor.fetchall()
-        return render_template('physical_products.html',physical_products=physical_products)
+        if(user_id!=-1):
+            query="SELECT name,username,email,phone,user_id from user where user_id = "+str(user_id)
+            cursor.execute(query)
+            user_details = cursor.fetchall()
+        else:
+            user_details=()
+        return render_template('physical_products.html',user_details=user_details,physical_products=physical_products)
     except Exception as e:
         return str(e)
 
