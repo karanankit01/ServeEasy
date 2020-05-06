@@ -79,7 +79,7 @@ def sign_in():
             return str(e)
     return render_template('sign_in.html')
 
-@app.route('/products/all/<int:user_id>')
+@app.route('/products/all/<int:user_id>',methods=['GET'])
 def all_product(user_id):
     try:  
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -91,6 +91,7 @@ def all_product(user_id):
         freestyle_products = cursor.fetchall()
         cursor.execute("SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from physical_products;")
         physical_products = cursor.fetchall()
+        print(user_id)
         if(user_id!=-1):
             query="SELECT name,username,email,phone,user_id from user where user_id = "+str(user_id)
             cursor.execute(query)
