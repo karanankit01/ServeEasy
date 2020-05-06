@@ -79,8 +79,9 @@ def sign_in():
             return str(e)
     return render_template('sign_in.html')
 
-@app.route('/products/all/<int:user_id>',methods=['GET'])
+@app.route('/products/all/<user_id>',methods=['GET'])
 def all_product(user_id):
+    user_id=int(user_id)
     try:  
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute("SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from design_products;")
@@ -98,6 +99,7 @@ def all_product(user_id):
             user_details = cursor.fetchall()
         else:
             user_details=()
+        print(user_details)
         return render_template('all_product.html',user_details=user_details,physical_products=physical_products,freestyle_products=freestyle_products,design_products=design_products,programming_products=programming_products)
     except Exception as e:
         return str(e)
