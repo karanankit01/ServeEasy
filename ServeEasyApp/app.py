@@ -19,6 +19,10 @@ user_details=()
 def home():
     return render_template('home.html',user_details=())
 
+@app.route('/index2')
+def index2():
+    return render_template('index2.html')
+
 @app.route('/home/<int:user_id>')
 def user_home(user_id):
     try:
