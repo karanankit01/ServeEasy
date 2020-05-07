@@ -1,0 +1,4 @@
+mysql_host: 'localhost'
+mysql_user: 'root'
+mysql_password: '*****'  # write your mysql password here
+mysql_db: 'ServeEasy'

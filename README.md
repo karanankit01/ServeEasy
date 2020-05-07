@@ -1,2 +1,2 @@
 # ServeEasy
-Main repository
+Main repository.
