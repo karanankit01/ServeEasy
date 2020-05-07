@@ -134,85 +134,64 @@
         <a class="navbar-brand" href="/sign_in">sign in</a>
         {% endif %}
     </nav>
-    <!-- <nav class="navbar navbar-dark bg-dark">
-        <form class="form-inline">
-            <a class="navbar-brand" href="{{ url }}">ServeEasy</a>
-            <div class="md-form my-0">
-                <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-            </div>
-            <button class="btn btn-outline-white btn-md my-2 my-sm-0 ml-3" type="submit">Search</button>
-        </form>
-        <div class="inline my-2 my-lg-0 ml-auto">
-            <a href="/sign_up" tabindex="-1" aria-disabled="true" style="color: white;">sign up</a>
-            <a style="color: white;">/</a>
-            <a href="/sign_in" tabindex="-1" aria-disabled="true" style="color: white;">sign in</a>
-        </div>
-
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample01"
-            aria-controls="navbarsExample01" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarsExample01">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link " href="/sign_up" tabindex="-1" aria-disabled="true">sign_up</a>
-                    <a class="nav-link " href="/sign_in" tabindex="-1" aria-disabled="true">sign_in</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">about</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">Products</a>
-                    <div class="dropdown-menu" aria-labelledby="dropdown01">
-                        {% if user_details %}
-                        <a class="dropdown-item" href="/products/all/{{ user_details[0].user_id }}">all</a>
-                        <a class="dropdown-item"
-                            href="/products/programming/{{ user_details[0].user_id }}">Programming</a>
-                        <a class="dropdown-item" href="/products/freestyle/{{ user_details[0].user_id }}">Freestyle</a>
-                        <a class="dropdown-item" href="/products/design/{{ user_details[0].user_id }}">Design</a>
-                        <a class="dropdown-item" href="/products/physical/{{ user_details[0].user_id }}">Physical</a>
-                        {% else %}
-                        <a class="dropdown-item" href="/products/all/-1">all</a>
-                        <a class="dropdown-item" href="/products/programming/-1">Programming</a>
-                        <a class="dropdown-item" href="/products/freestyle/-1">Freestyle</a>
-                        <a class="dropdown-item" href="/products/design/-1">Design</a>
-                        <a class="dropdown-item" href="/products/physical/-1">Physical</a>
-                        {% endif %}
-                    </div>
-                </li>
-            </ul>
-            <form class="form-inline my-2 my-md-0">
-                <input class="form-control" type="text" placeholder="Search" aria-label="Search">
-            </form>
-        </div>
-    </nav> -->
+    
 
 
-
-
-    <div class="container">
+    <div class="container-fluid">
 
         <!-- write any page content here -->
         <br>
         <h1>freestyle</h1>
         <br>
-        {% for product in freestyle_products %}
-        <div class="shadow-lg border border-dark p-5 bg-white panel panel-primary">
-            <h2> {{ product.product_name }} </h2>
-            <small>estimated price {{product.est_price }} with rating {{product.average_rating}} by
-                {{product.no_of_time}} persons</small>
+        {% set len = freestyle_products | length %}
+        {% for i in range(0,len//3 +1 ) %}
+        {% set count = 3*i %}
+        <div class="row">
+            {% set product = freestyle_products[count] %}
+            <div class="column shadow-lg border border-dark bg-white">
+                <h2> {{ product.product_name }} </h2>
+                <small>estimated price {{product.est_price }} with rating {{product.average_rating}} by
+                    {{product.no_of_time}} persons</small>
 
+                <br>
+                <p style="white-space:pre-wrap"> decription about the product(to be added in data base) </p>
+                <a class="btn btn-dark" href='#'>buy</a>
+                <a class="btn btn-dark" href='#'>like</a>
+            </div>
             <br>
-            <p style="white-space:pre-wrap"> decription about the product(to be added in data base) </p>
-            <a class="btn btn-dark" href='#'>buy</a>
-            <a class="btn btn-dark" href='#'>like</a>
+
+            {% if (count+1 < len) %}
+            {% set product = freestyle_products[count+1] %}
+
+            <div class="column shadow-lg border border-dark  bg-white"">
+                <h2> {{ product.product_name }} </h2>
+                <small>estimated price {{product.est_price }} with rating {{product.average_rating}} by
+                    {{product.no_of_time}} persons</small>
+
+                <br>
+                <p style="white-space:pre-wrap"> decription about the product(to be added in data base) </p>
+                <a class="btn btn-dark" href='#'>buy</a>
+                <a class="btn btn-dark" href='#'>like</a>
+            </div>
+            <br>
+            {% endif %}
+
+            {% if (count+2 < len) %}
+            {% set product = freestyle_products[count+2] %}
+            <div class="column shadow-lg border border-dark  bg-white">
+                <h2> {{ product.product_name }} </h2>
+                <small>estimated price {{product.est_price }} with rating {{product.average_rating}} by
+                    {{product.no_of_time}} persons</small>
+
+                <br>
+                <p style="white-space:pre-wrap"> decription about the product(to be added in data base) </p>
+                <a class="btn btn-dark" href='#'>buy</a>
+                <a class="btn btn-dark" href='#'>like</a>
+            </div>
+            <br>
+            {% endif %}
+
         </div>
-        <br>
         {% endfor %}
 
     </div>

@@ -79,7 +79,7 @@
             <ul class="navbar-nav mr-auto">
                 {% if user_details %}
                 <li class="nav-item active">
-                    <a class="nav-link" href="/home/{{ user_details[0].user_id }}">Home <span
+                    <a class="nav-link" disable="true" href="/home/{{ user_details[0].user_id }}">Home <span
                             class="sr-only">(current)</span></a>
                 </li>
                 {% else %}
@@ -89,20 +89,20 @@
                 {% endif %}
                 {% if user_details %}
                 <li class="nav-item">
-                    <a class="nav-link" href="/my_orders/{{ user_details[0].user_id }}">My Orders</a>
+                    <a class="nav-link" disable="true" href="#">My Orders</a>
                 </li>
                 {% else %}
                 <li class="nav-item">
-                    <a class="nav-link" href="/sign_in">My Orders</a>
+                    <a class="nav-link" disable="true" href="#">My Orders</a>
                 </li>
                 {% endif %}
                 {% if user_details %}
                 <li class="nav-item">
-                    <a class="nav-link disabled" href="/my_products/{{ user_details[0].user_id }}">My Products</a>
+                    <a class="nav-link" disable="true" href="#">My Products</a>
                 </li>
                 {% else %}
                 <li class="nav-item">
-                    <a class="nav-link disabled" href="/my_products/{{ user_details[0].user_id }}">My Products</a>
+                    <a class="nav-link" disabled="disabled" href="#">My Products</a>
                 </li>
                 {% endif %}
                 <li class="nav-item dropdown">
@@ -134,67 +134,7 @@
         <a class="navbar-brand" href="/sign_in">sign in</a>
         {% endif %}
     </nav>
-    <!-- <nav class="navbar navbar-dark bg-dark">
-        <form class="form-inline">
-            <a class="navbar-brand" href="{{ url }}">ServeEasy</a>
-            <div class="md-form my-0">
-                <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-            </div>
-            <button class="btn btn-outline-white btn-md my-2 my-sm-0 ml-3" type="submit">Search</button>
-        </form>
-        <div class="inline my-2 my-lg-0 ml-auto">
-            <a href="/sign_up" tabindex="-1" aria-disabled="true" style="color: white;">sign up</a>
-            <a style="color: white;">/</a>
-            <a href="/sign_in" tabindex="-1" aria-disabled="true" style="color: white;">sign in</a>
-        </div>
-
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample01"
-            aria-controls="navbarsExample01" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarsExample01">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link " href="/sign_up" tabindex="-1" aria-disabled="true">sign_up</a>
-                    <a class="nav-link " href="/sign_in" tabindex="-1" aria-disabled="true">sign_in</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">about</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">Products</a>
-                    <div class="dropdown-menu" aria-labelledby="dropdown01">
-                        {% if user_details %}
-                        <a class="dropdown-item" href="/products/all/{{ user_details[0].user_id }}">all</a>
-                        <a class="dropdown-item"
-                            href="/products/programming/{{ user_details[0].user_id }}">Programming</a>
-                        <a class="dropdown-item" href="/products/freestyle/{{ user_details[0].user_id }}">Freestyle</a>
-                        <a class="dropdown-item" href="/products/design/{{ user_details[0].user_id }}">Design</a>
-                        <a class="dropdown-item" href="/products/physical/{{ user_details[0].user_id }}">Physical</a>
-                        {% else %}
-                        <a class="dropdown-item" href="/products/all/-1">all</a>
-                        <a class="dropdown-item" href="/products/programming/-1">Programming</a>
-                        <a class="dropdown-item" href="/products/freestyle/-1">Freestyle</a>
-                        <a class="dropdown-item" href="/products/design/-1">Design</a>
-                        <a class="dropdown-item" href="/products/physical/-1">Physical</a>
-                        {% endif %}
-                    </div>
-                </li>
-            </ul>
-            <form class="form-inline my-2 my-md-0">
-                <input class="form-control" type="text" placeholder="Search" aria-label="Search">
-            </form>
-        </div>
-    </nav> -->
-
-
-
-
+    
     <div class="container">
 
         <!-- write any page content here -->

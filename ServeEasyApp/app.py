@@ -72,7 +72,7 @@ def sign_in():
                 if(user_password==password_id_details[0]['password']):
                     
                     url_for_user_home='/home/'+str(password_id_details[0]['user_id'])
-                    return redirect(url_for_user_home)
+                    return redirect(url_for_user_home, user_details=())
                 else:
                     return "wrong password try again"
         except Exception as e:
@@ -84,15 +84,9 @@ def all_product(user_id):
     user_id=int(user_id)
     try:  
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute("SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from design_products;")
-        design_products = cursor.fetchall()
-        cursor.execute("SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from programming_products;")
-        programming_products = cursor.fetchall()
-        cursor.execute("SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from freestyle_products;")
-        freestyle_products = cursor.fetchall()
-        cursor.execute("SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from physical_products;")
-        physical_products = cursor.fetchall()
-        print(user_id)
+        cursor.execute("SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from all_products;")
+        all_products = cursor.fetchall()
+        # print(user_id)
         if(user_id!=-1):
             query="SELECT name,username,email,phone,user_id from user where user_id = "+str(user_id)
             cursor.execute(query)
@@ -100,7 +94,7 @@ def all_product(user_id):
         else:
             user_details=()
         print(user_details)
-        return render_template('all_product.html',user_details=user_details,physical_products=physical_products,freestyle_products=freestyle_products,design_products=design_products,programming_products=programming_products)
+        return render_template('all_product.html',user_details=user_details,all_products=all_products)
     except Exception as e:
         return str(e)
 
