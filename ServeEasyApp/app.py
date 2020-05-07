@@ -79,6 +79,24 @@ def sign_in():
             return str(e)
     return render_template('sign_in.html')
 
+
+@app.route('/my_products/<user_id>',methods=['GET'])
+def my_products(user_id):
+    try:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        if(user_id!=-1):
+            query="SELECT name,username,email,phone,user_id from user where user_id = "+str(user_id)
+            cursor.execute(query)
+            user_details = cursor.fetchall()
+        else:
+            user_details=()
+        query="SELECT product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from all_products where owner_id = "+"'"+user_id+"'"
+        cursor.execute(query)
+        my_products = cursor.fetchall()
+        return render_template('my_products.html',my_products=my_products,user_details=user_details)
+    except Exception as e:
+        return str(e)
+
 @app.route('/products/all/<user_id>',methods=['GET'])
 def all_product(user_id):
     user_id=int(user_id)

@@ -140,13 +140,14 @@
 
         <!-- write any page content here -->
         <br>
-        <h1>programming</h1>
+        <h1>your products</h1>
         <br>
-        {% set len = programming_products | length %}
+        {% set len = my_products | length %}
         {% for i in range(0,len//3 +1 ) %}
         {% set count = 3*i %}
         <div class="row">
-            {% set product = programming_products[count] %}
+            {% if (count < len) %}
+            {% set product = my_products[count] %}
             <div class="column shadow-lg border border-dark bg-white">
                 <h2> {{ product.product_name }} </h2>
                 <small>estimated price {{product.est_price }} with rating {{product.average_rating}} by
@@ -154,13 +155,14 @@
 
                 <br>
                 <p style="white-space:pre-wrap"> decription about the product(to be added in data base) </p>
-                <a class="btn btn-dark" href='#'>buy</a>
-                <a class="btn btn-dark" href='#'>like</a>
+                <a class="btn btn-dark" href='#'>edit</a>
+                <a class="btn btn-dark" href='#'>delete</a>
             </div>
             <br>
+            {% endif %}
 
             {% if (count+1 < len) %}
-            {% set product = programming_products[count+1] %}
+            {% set product = my_products[count+1] %}
 
             <div class="column shadow-lg border border-dark  bg-white"">
                 <h2> {{ product.product_name }} </h2>
@@ -169,14 +171,14 @@
 
                 <br>
                 <p style="white-space:pre-wrap"> decription about the product(to be added in data base) </p>
-                <a class="btn btn-dark" href='#'>buy</a>
-                <a class="btn btn-dark" href='#'>like</a>
+                <a class="btn btn-dark" href='#'>edit</a>
+                <a class="btn btn-dark" href='#'>delete</a>
             </div>
             <br>
             {% endif %}
 
             {% if (count+2 < len) %}
-            {% set product = programming_products[count+2] %}
+            {% set product = my_products[count+2] %}
             <div class="column shadow-lg border border-dark  bg-white">
                 <h2> {{ product.product_name }} </h2>
                 <small>estimated price {{product.est_price }} with rating {{product.average_rating}} by
@@ -184,8 +186,8 @@
 
                 <br>
                 <p style="white-space:pre-wrap"> decription about the product(to be added in data base) </p>
-                <a class="btn btn-dark" href='#'>buy</a>
-                <a class="btn btn-dark" href='#'>like</a>
+                <a class="btn btn-dark" href='#'>edit</a>
+                <a class="btn btn-dark" href='#'>delete</a>
             </div>
             <br>
             {% endif %}
