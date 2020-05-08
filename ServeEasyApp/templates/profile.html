@@ -134,7 +134,7 @@
         <a class="navbar-brand" href="/sign_in">sign in</a>
         {% endif %}
     </nav>
-    
+
 
 
     <div class="container-fluid row">
@@ -151,16 +151,28 @@
                 </li>
                 {% endfor %}
             </ul>
-            <a class="btn btn-dark" href='/my_products/{{ user_details[0].user_id }}/add_new_product' style="margin-left: 35px;">Add New Product</a>
+            <a class="btn btn-dark" href='/my_products/{{ user_details[0].user_id }}/add_new_product'
+                style="margin-left: 35px;">Add New Product</a>
         </div>
         <div class="column">
             {{ user_details[0].name }}
+            <br>
+            {{ user_details[0].discribe_yourself }}
+            <br>
         </div>
         <div class="column">
             <div class="shadow-lg border border-dark bg-white">
                 <h1>
+                    {{ user_details[0].profile_pic }}
+                    <img src="user_details[0].profile_pic">
+                    <br>
                     place for profile pic
                 </h1>
+                <br>
+                <form action="/profile/upload/{{ user_details[0].user_id }}" method="POST" enctype="multipart/form-data">
+                    <input type="file" name="file" />
+                    <input type="submit" />
+                </form>
             </div>
         </div>
     </div>

@@ -44,9 +44,9 @@ def sign_up():
         email = user_details['email']
         password = user_details['password']
         phone = user_details['phone']
-        
+        user_id = 0
         cur = mysql.connection.cursor()
-        cur.execute("insert into user value(%s,%s,%s,%s,%s)",(name,0,username,email,phone))
+        cur.execute("insert into user value(%s,%s,%s,%s,%s,%s,%s,%s)",(name,user_id,username,email,phone,password,'',''))
         mysql.connection.commit()
         cur.close()
         
@@ -155,12 +155,27 @@ def add_new_product(user_id):
             return str(e)
     return render_template('add_new_product.html',user_details=user_details)
 
+@app.route('/profile/upload/<user_id>',methods=['POST'])
+def upload(user_id):
+    try:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        if(request.method=='POST'):
+            pic=request.files['file']
+            print(pic)
+            query="update user set profile_pic = %s where user_id = "+str(user_id)
+            cursor.execute(query,[pic])
+            mysql.connection.commit()
+            cursor.close()
+        return redirect('/profile/'+user_id)
+    except Exception as e:
+        return str(e)
+
 @app.route('/profile/<user_id>',methods=['GET'])
 def profile(user_id):
     try:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         if(user_id!=-1):
-            query="SELECT name,username,email,phone,user_id from user where user_id = "+str(user_id)
+            query="SELECT profile_pic,discribe_yourself,name,username,email,phone,user_id from user where user_id = "+str(user_id)
             cursor.execute(query)
             user_details = cursor.fetchall()
         else:
@@ -168,7 +183,7 @@ def profile(user_id):
         query="SELECT product_id as product_id, product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from all_products where owner_id = "+"'"+user_id+"'"
         cursor.execute(query)
         my_products = cursor.fetchall()
-        print(user_details)
+        # print(user_details)
         return render_template('profile.html',my_products=my_products,user_details=user_details)
     except Exception as e:
         return str(e)
@@ -275,4 +290,3 @@ def physical_products(user_id):
 
 if __name__=='__main__':
     app.run(debug=True)
-
