@@ -2,7 +2,7 @@
 
 
 {%  block head %}
-<title> sign_up </title>
+<title> Add New Product </title>
 {% endblock %}
 
 {%  block body %}
@@ -79,7 +79,7 @@
             <ul class="navbar-nav mr-auto">
                 {% if user_details %}
                 <li class="nav-item active">
-                    <a class="nav-link" href="/home/{{ user_details[0].user_id }}">Home <span
+                    <a class="nav-link" disable="true" href="/home/{{ user_details[0].user_id }}">Home <span
                             class="sr-only">(current)</span></a>
                 </li>
                 {% else %}
@@ -89,20 +89,20 @@
                 {% endif %}
                 {% if user_details %}
                 <li class="nav-item">
-                    <a class="nav-link" href="#">My Orders</a>
+                    <a class="nav-link" disable="true" href="#">My Orders</a>
                 </li>
                 {% else %}
                 <li class="nav-item">
-                    <a class="nav-link" href="#">My Orders</a>
+                    <a class="nav-link" disable="true" href="#">My Orders</a>
                 </li>
                 {% endif %}
                 {% if user_details %}
                 <li class="nav-item">
-                    <a class="nav-link disabled" href="#">My Products</a>
+                    <a class="nav-link" disable="true" href="#">My Products</a>
                 </li>
                 {% else %}
                 <li class="nav-item">
-                    <a class="nav-link disabled" href="#">My Products</a>
+                    <a class="nav-link" disabled="disabled" href="#">My Products</a>
                 </li>
                 {% endif %}
                 <li class="nav-item dropdown">
@@ -134,26 +134,31 @@
         <a class="navbar-brand" href="/sign_in">sign in</a>
         {% endif %}
     </nav>
-    
+
     <div class="container">
 
         <!-- write any page content here -->
         <br>
-        <h1>sign_up page</h1>
+        <h1>Add New Product</h1>
         <br>
 
-        <form method='POST' action='/sign_up'>
-            name <input type='text' name='name'>
+        <form method='POST' action='/my_products/{{ user_details[0].user_id }}/add_new_product'>
+            Product Type: <select name='type'>
+                <option value='1' stud_name='ph'>Physical Product</option>
+                <option value='2' stud_name='p'>Programming Product</option>
+                <option value='3' stud_name='d'>Design Product</option>
+                <option value='4' stud_name='f'>Freestyle Product</option>
+            </select>
             <br>
-            username <input type='text' name='username'>
+            product name <input type='text' name='product_name'>
             <br>
-            email <input type='text' name='email'>
+            price <input type='text' name='est_price'>
             <br>
-            password <input type='text' name='password'>
+            Short discription to display <input type='text' name='short_discription'>
             <br>
-            phone <input type='number' default=0 name='phone'>
-            <br>
-            <input type='submit' class='btn bg-drak'>
+            full discription <textarea class="form-control" type='text' name='full_discription' placeholder="write your Disciption here"
+            aria-label="write your discription here" rows="3"></textarea>
+            <a class='btn bg-drak'><input type='submit' value="submit"></a>
         </form>
 
     </div>

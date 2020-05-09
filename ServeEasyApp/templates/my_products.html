@@ -154,7 +154,7 @@
                     {{product.no_of_time}} persons</small>
 
                 <br>
-                <p style="white-space:pre-wrap"> decription about the product(to be added in data base) </p>
+                <p style="white-space:pre-wrap"> {{ product.short_discription }} </p>
                 <a class="btn btn-dark" href='#'>edit</a>
                 <a class="btn btn-dark" href='#'>delete</a>
             </div>
@@ -170,7 +170,7 @@
                     {{product.no_of_time}} persons</small>
 
                 <br>
-                <p style="white-space:pre-wrap"> decription about the product(to be added in data base) </p>
+                <p style="white-space:pre-wrap"> {{ product.short_discription }} </p>
                 <a class="btn btn-dark" href='#'>edit</a>
                 <a class="btn btn-dark" href='#'>delete</a>
             </div>
@@ -185,7 +185,7 @@
                     {{product.no_of_time}} persons</small>
 
                 <br>
-                <p style="white-space:pre-wrap"> decription about the product(to be added in data base) </p>
+                <p style="white-space:pre-wrap"> {{ product.short_discription }} </p>
                 <a class="btn btn-dark" href='#'>edit</a>
                 <a class="btn btn-dark" href='#'>delete</a>
             </div>
@@ -194,7 +194,7 @@
 
         </div>
         {% endfor %}
-
+        <a class="btn btn-dark" href='/my_products/{{ user_details[0].user_id }}/add_new_product' style="margin-left: 35px;">Add New Product</a>
     </div>
 
 
