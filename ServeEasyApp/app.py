@@ -161,7 +161,7 @@ def upload(user_id):
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         if(request.method=='POST'):
             pic=request.files['file']
-            print(pic)
+            # print(pic)
             query="update user set profile_pic = %s where user_id = "+str(user_id)
             cursor.execute(query,[pic])
             mysql.connection.commit()

@@ -137,7 +137,7 @@
 
 
 
-    <div class="container-fluid row">
+    <div class="container-fluid row  main_container">
 
         <!-- write any page content here -->
         <div class="column">
@@ -164,7 +164,7 @@
             <div class="shadow-lg border border-dark bg-white">
                 <h1>
                     {{ user_details[0].profile_pic }}
-                    <img src="user_details[0].profile_pic">
+                    <img src="data:image/png;base64,'.base64_encode({{ user_details[0].profile_pic }}).'">
                     <br>
                     place for profile pic
                 </h1>

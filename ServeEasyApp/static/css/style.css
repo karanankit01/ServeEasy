@@ -248,3 +248,7 @@ a.article:hover {
     display: table;
     clear: both;
 }
+
+.main_container{
+    min-block-size: 473px;
+}
