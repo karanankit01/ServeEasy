@@ -2,7 +2,7 @@
 
 
 {%  block head %}
-<title> programming Products </title>
+<title> Add New Product </title>
 {% endblock %}
 
 {%  block body %}
@@ -79,7 +79,7 @@
             <ul class="navbar-nav mr-auto">
                 {% if user_details %}
                 <li class="nav-item active">
-                    <a class="nav-link" href="/home/{{ user_details[0].user_id }}">Home <span
+                    <a class="nav-link" disable="true" href="/home/{{ user_details[0].user_id }}">Home <span
                             class="sr-only">(current)</span></a>
                 </li>
                 {% else %}
@@ -89,20 +89,20 @@
                 {% endif %}
                 {% if user_details %}
                 <li class="nav-item">
-                    <a class="nav-link" href="/my_orders/{{ user_details[0].user_id }}">My Orders</a>
+                    <a class="nav-link" disable="true" href="#">My Orders</a>
                 </li>
                 {% else %}
                 <li class="nav-item">
-                    <a class="nav-link" href="/sign_in">My Orders</a>
+                    <a class="nav-link" disable="true" href="#">My Orders</a>
                 </li>
                 {% endif %}
                 {% if user_details %}
                 <li class="nav-item">
-                    <a class="nav-link" href="/my_products/{{ user_details[0].user_id }}">My Products</a>
+                    <a class="nav-link" disable="true" href="#">My Products</a>
                 </li>
                 {% else %}
                 <li class="nav-item">
-                    <a class="nav-link" href="/my_products/{{ user_details[0].user_id }}">My Products</a>
+                    <a class="nav-link" disabled="disabled" href="#">My Products</a>
                 </li>
                 {% endif %}
                 <li class="nav-item dropdown">
@@ -135,63 +135,31 @@
         {% endif %}
     </nav>
 
-
-    <div class="container-fluid">
+    <div class="container">
 
         <!-- write any page content here -->
         <br>
-        <h1>programming</h1>
+        <h1>Add New Product</h1>
         <br>
-        {% set len = programming_products | length %}
-        {% for i in range(0,len//3 +1 ) %}
-        {% set count = 3*i %}
-        <div class="row">
-            {% set product = programming_products[count] %}
-            <div class="column shadow-lg border border-dark bg-white">
-                <h2> {{ product.product_name }} </h2>
-                <small>estimated price {{product.est_price }} with rating {{product.average_rating}} by
-                    {{product.no_of_time}} persons</small>
 
-                <br>
-                <p style="white-space:pre-wrap"> {{ product.short_discription }} </p>
-                <a class="btn btn-dark" href='#'>buy</a>
-                <a class="btn btn-dark" href='#'>like</a>
-            </div>
+        <form method='POST' action='/my_products/{{ user_details[0].user_id }}/add_new_product'>
+            Product Type: <select name='type'>
+                <option value='1' stud_name='ph'>Physical Product</option>
+                <option value='2' stud_name='p'>Programming Product</option>
+                <option value='3' stud_name='d'>Design Product</option>
+                <option value='4' stud_name='f'>Freestyle Product</option>
+            </select>
             <br>
-
-            {% if (count+1 < len) %}
-            {% set product = programming_products[count+1] %}
-
-            <div class="column shadow-lg border border-dark  bg-white"">
-                <h2> {{ product.product_name }} </h2>
-                <small>estimated price {{product.est_price }} with rating {{product.average_rating}} by
-                    {{product.no_of_time}} persons</small>
-
-                <br>
-                <p style="white-space:pre-wrap"> {{ product.short_discription }} </p>
-                <a class="btn btn-dark" href='#'>buy</a>
-                <a class="btn btn-dark" href='#'>like</a>
-            </div>
+            product name <input type='text' name='product_name'>
             <br>
-            {% endif %}
-
-            {% if (count+2 < len) %}
-            {% set product = programming_products[count+2] %}
-            <div class="column shadow-lg border border-dark  bg-white">
-                <h2> {{ product.product_name }} </h2>
-                <small>estimated price {{product.est_price }} with rating {{product.average_rating}} by
-                    {{product.no_of_time}} persons</small>
-
-                <br>
-                <p style="white-space:pre-wrap"> {{ product.short_discription }} </p>
-                <a class="btn btn-dark" href='#'>buy</a>
-                <a class="btn btn-dark" href='#'>like</a>
-            </div>
+            price <input type='text' name='est_price'>
             <br>
-            {% endif %}
-
-        </div>
-        {% endfor %}
+            Short discription to display <input type='text' name='short_discription'>
+            <br>
+            full discription <textarea class="form-control" type='text' name='full_discription' placeholder="write your Disciption here"
+            aria-label="write your discription here" rows="3"></textarea>
+            <a class='btn bg-drak'><input type='submit' value="submit"></a>
+        </form>
 
     </div>
 

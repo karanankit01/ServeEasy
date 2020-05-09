@@ -2,7 +2,7 @@
 
 
 {%  block head %}
-<title> programming Products </title>
+<title> Profile </title>
 {% endblock %}
 
 {%  block body %}
@@ -102,7 +102,7 @@
                 </li>
                 {% else %}
                 <li class="nav-item">
-                    <a class="nav-link" href="/my_products/{{ user_details[0].user_id }}">My Products</a>
+                    <a class="nav-link" href="/sign_in">My Products</a>
                 </li>
                 {% endif %}
                 <li class="nav-item dropdown">
@@ -136,63 +136,45 @@
     </nav>
 
 
-    <div class="container-fluid">
+
+    <div class="container-fluid row">
 
         <!-- write any page content here -->
-        <br>
-        <h1>programming</h1>
-        <br>
-        {% set len = programming_products | length %}
-        {% for i in range(0,len//3 +1 ) %}
-        {% set count = 3*i %}
-        <div class="row">
-            {% set product = programming_products[count] %}
-            <div class="column shadow-lg border border-dark bg-white">
-                <h2> {{ product.product_name }} </h2>
-                <small>estimated price {{product.est_price }} with rating {{product.average_rating}} by
-                    {{product.no_of_time}} persons</small>
-
-                <br>
-                <p style="white-space:pre-wrap"> {{ product.short_discription }} </p>
-                <a class="btn btn-dark" href='#'>buy</a>
-                <a class="btn btn-dark" href='#'>like</a>
-            </div>
-            <br>
-
-            {% if (count+1 < len) %}
-            {% set product = programming_products[count+1] %}
-
-            <div class="column shadow-lg border border-dark  bg-white"">
-                <h2> {{ product.product_name }} </h2>
-                <small>estimated price {{product.est_price }} with rating {{product.average_rating}} by
-                    {{product.no_of_time}} persons</small>
-
-                <br>
-                <p style="white-space:pre-wrap"> {{ product.short_discription }} </p>
-                <a class="btn btn-dark" href='#'>buy</a>
-                <a class="btn btn-dark" href='#'>like</a>
-            </div>
-            <br>
-            {% endif %}
-
-            {% if (count+2 < len) %}
-            {% set product = programming_products[count+2] %}
-            <div class="column shadow-lg border border-dark  bg-white">
-                <h2> {{ product.product_name }} </h2>
-                <small>estimated price {{product.est_price }} with rating {{product.average_rating}} by
-                    {{product.no_of_time}} persons</small>
-
-                <br>
-                <p style="white-space:pre-wrap"> {{ product.short_discription }} </p>
-                <a class="btn btn-dark" href='#'>buy</a>
-                <a class="btn btn-dark" href='#'>like</a>
-            </div>
-            <br>
-            {% endif %}
-
+        <div class="column">
+            <h1>
+                My Products List
+            </h1>
+            <ul>
+                {% for product in my_products %}
+                <li style="margin: 10px;">
+                    <a href="/product/{{ product.product_id }}">{{ product.product_name }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+            <a class="btn btn-dark" href='/my_products/{{ user_details[0].user_id }}/add_new_product'
+                style="margin-left: 35px;">Add New Product</a>
         </div>
-        {% endfor %}
-
+        <div class="column">
+            {{ user_details[0].name }}
+            <br>
+            {{ user_details[0].discribe_yourself }}
+            <br>
+        </div>
+        <div class="column">
+            <div class="shadow-lg border border-dark bg-white">
+                <h1>
+                    {{ user_details[0].profile_pic }}
+                    <img src="user_details[0].profile_pic">
+                    <br>
+                    place for profile pic
+                </h1>
+                <br>
+                <form action="/profile/upload/{{ user_details[0].user_id }}" method="POST" enctype="multipart/form-data">
+                    <input type="file" name="file" />
+                    <input type="submit" />
+                </form>
+            </div>
+        </div>
     </div>
 
 
