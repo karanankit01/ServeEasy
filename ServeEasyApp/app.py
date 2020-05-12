@@ -79,6 +79,17 @@ def sign_in():
             return str(e)
     return render_template('sign_in.html')
 
+@app.route('/about/<user_id>')
+def about(user_id):
+    if(user_id!=0):
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        query="SELECT name,username,email,phone,user_id from user where user_id = "+str(user_id)
+        cursor.execute(query)
+        user_details = cursor.fetchall()
+    else:
+        user_details = ()
+    return render_template('about.html',user_details=user_details)
+
 @app.route('/my_products/<user_id>/add_new_product',methods=['POST','GET'])
 def add_new_product(user_id):
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
