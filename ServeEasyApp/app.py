@@ -10,7 +10,7 @@ db = yaml.load(open('db.yaml'))
 app.config['MYSQ_HOST'] = db['mysql_host']
 app.config['MYSQL_USER'] = db['mysql_user']
 app.config['MYSQL_PASSWORD'] = db['mysql_password']
-app.config['MYSQL_DB'] = db['mysql_db'] 
+app.config['MYSQL_DB'] = db['mysql_db']
 mysql = MySQL(app)
 
 
@@ -35,7 +35,7 @@ def user_home(user_id):
         return str(e)
 
 
-@app.route('/sign_up',methods=['POST','GET'])
+@app.route('/sign_up',methods=['POST'])
 def sign_up():
     if(request.method=='POST'):
         user_details = request.form
@@ -44,22 +44,21 @@ def sign_up():
         email = user_details['email']
         password = user_details['password']
         phone = user_details['phone']
+
         user_id = 0
         cur = mysql.connection.cursor()
         cur.execute("insert into user value(%s,%s,%s,%s,%s,%s,%s,%s)",(name,user_id,username,email,phone,password,'',''))
         mysql.connection.commit()
         cur.close()
-        
         return redirect('/home')
     return render_template('sign_up.html')
 
-@app.route('/sign_in',methods=['POST','GET'])
+@app.route('/sign_in',methods=['POST'])
 def sign_in():
     if(request.method=='POST'):
         user_details = request.form
         username = user_details['username']
         user_password = user_details['password']
-        # print(username,password)
         try:
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             query="SELECT user_id AS user_id ,password AS password FROM user WHERE username ="+"'"+username+"'"
@@ -70,7 +69,6 @@ def sign_in():
                 return "user dosn't exist try another or sign up"
             else:
                 if(user_password==password_id_details[0]['password']):
-                    
                     url_for_user_home='/home/'+str(password_id_details[0]['user_id'])
                     return redirect(url_for_user_home)
                 else:
@@ -219,7 +217,7 @@ def my_products(user_id):
 @app.route('/products/all/<user_id>',methods=['GET'])
 def all_product(user_id):
     user_id=int(user_id)
-    try:  
+    try:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute("SELECT short_discription as short_discription, product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from all_products;")
         all_products = cursor.fetchall()
@@ -250,7 +248,7 @@ def programming_products(user_id):
         return render_template('programming_products.html',user_details=user_details,programming_products=programming_products)
     except Exception as e:
         return str(e)
-    
+
 @app.route('/products/freestyle/<int:user_id>',methods=['GET'])
 def freestyle_products(user_id):
     try:
