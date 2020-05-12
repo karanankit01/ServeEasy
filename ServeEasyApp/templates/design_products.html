@@ -7,16 +7,17 @@
 
 {%  block body %}
 <nav id="sidebar">
-    <div class="sidebar-header">
-        <h3>ServeEasy</h3>
-    </div>
 
     <ul class="list-unstyled components">
         <div class="sidebar-header">
-            <h3>heading</h3>
+            <h3>ServeEasy</h3>
         </div>
         <li class="active">
-            <a href="#">About</a>
+            {% if user_details %}
+            <a href="/about/{{ user_details[0].user_id }}">About</a>
+            {% else %}
+            <a href="/about/0">About</a>
+            {% endif %}
         </li>
         <li class="active">
             <a class="dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true"
@@ -136,7 +137,7 @@
     </nav>
     
 
-    <div class="container-fluid">
+    <div class="container-fluid  main_container">
 
         <!-- write any page content here -->
         <br>
@@ -205,7 +206,13 @@
                     <div class="widget">
                         <h3>Company</h3>
                         <ul>
-                            <li><a href="#">About us</a></li>
+                            <li>
+                                {% if user_details %}
+                                <a href="/about/{{ user_details[0].user_id }}">About us</a>
+                                {% else %}
+                                <a href="/about/0">About us</a>
+                                {% endif %}
+                            </li>
                             <li><a href="#">We are hiring</a></li>
                             <li><a href="#">Meet the team</a></li>
                             <li><a href="#">Copyright</a></li>
@@ -295,7 +302,13 @@
                 <div class="col-sm-6">
                     <ul class="pull-right">
                         <li><a href="/home">Home</a></li>
-                        <li><a href="#">About Us</a></li>
+                        <li>
+                            {% if user_details %}
+                            <a href="/about/{{ user_details[0].user_id }}">About us</a>
+                            {% else %}
+                            <a href="/about/0">About us</a>
+                            {% endif %}
+                        </li>
                         <li><a href="#">Faq</a></li>
                         <li><a href="#">Contact Us</a></li>
                     </ul>

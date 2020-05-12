@@ -2,7 +2,7 @@
 
 
 {%  block head %}
-<title> programming Products </title>
+<title> About Us </title>
 {% endblock %}
 
 {%  block body %}
@@ -102,7 +102,7 @@
                 </li>
                 {% else %}
                 <li class="nav-item">
-                    <a class="nav-link" href="/my_products/{{ user_details[0].user_id }}">My Products</a>
+                    <a class="nav-link" href="/sign_in">My Products</a>
                 </li>
                 {% endif %}
                 <li class="nav-item dropdown">
@@ -136,67 +136,16 @@
     </nav>
 
 
-    <div class="container-fluid  main_container">
+
+    <div class="container main_container">
 
         <!-- write any page content here -->
         <br>
-        <h1>programming</h1>
+        <h1>About Us</h1>
         <br>
-        {% set len = programming_products | length %}
-        {% for i in range(0,len//3 +1 ) %}
-        {% set count = 3*i %}
-        <div class="row">
-            {% set product = programming_products[count] %}
-            <div class="column shadow-lg border border-dark bg-white">
-                <h2> {{ product.product_name }} </h2>
-                <small>estimated price {{product.est_price }} with rating {{product.average_rating}} by
-                    {{product.no_of_time}} persons</small>
-
-                <br>
-                <p style="white-space:pre-wrap"> {{ product.short_discription }} </p>
-                <a class="btn btn-dark" href='#'>buy</a>
-                <a class="btn btn-dark" href='#'>like</a>
-            </div>
-            <br>
-
-            {% if (count+1 < len) %}
-            {% set product = programming_products[count+1] %}
-
-            <div class="column shadow-lg border border-dark  bg-white"">
-                <h2> {{ product.product_name }} </h2>
-                <small>estimated price {{product.est_price }} with rating {{product.average_rating}} by
-                    {{product.no_of_time}} persons</small>
-
-                <br>
-                <p style="white-space:pre-wrap"> {{ product.short_discription }} </p>
-                <a class="btn btn-dark" href='#'>buy</a>
-                <a class="btn btn-dark" href='#'>like</a>
-            </div>
-            <br>
-            {% endif %}
-
-            {% if (count+2 < len) %}
-            {% set product = programming_products[count+2] %}
-            <div class="column shadow-lg border border-dark  bg-white">
-                <h2> {{ product.product_name }} </h2>
-                <small>estimated price {{product.est_price }} with rating {{product.average_rating}} by
-                    {{product.no_of_time}} persons</small>
-
-                <br>
-                <p style="white-space:pre-wrap"> {{ product.short_discription }} </p>
-                <a class="btn btn-dark" href='#'>buy</a>
-                <a class="btn btn-dark" href='#'>like</a>
-            </div>
-            <br>
-            {% endif %}
-
-        </div>
-        {% endfor %}
+        
 
     </div>
-
-
-
 
     <section id="bottom">
         <div class="container wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="600ms">

@@ -142,17 +142,25 @@ a:focus{
     align-items: stretch;
 }
 #sidebar {
+    margin-top: 50px;
+    margin-left: -250px;
+    /* position: -webkit-sticky; */
+    position: fixed;
+    overflow-x: hidden;
+    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
     min-width: 250px;
+    /* max-block-size: 900px; */
     max-width: 250px;
     background: #7386D5;
     color: #fff;
     transition: all 0.3s;
 }
 #sidebar.active{
-	margin-left: -250px;
+	margin-left: 0px;
 }
 
 #sidebar .sidebar-header{
+    margin-top: 30px;
 	padding: 20px;
 	background: #6d7fcc;
 }
@@ -226,9 +234,9 @@ a.article:hover {
 }
 
 @media(maz-width:768px){
-	#sidebar{margin-left: -250px;}
+	#sidebar{margin-left: 0px;}
 	#sidebar.active{
-		margin-left: 0px;
+		margin-left: -250px;
 	}
 	#sidebarCollapse span{
 		display: none;
@@ -247,4 +255,8 @@ a.article:hover {
     content: "";
     display: table;
     clear: both;
+}
+
+.main_container{
+    min-block-size: 473px;
 }
