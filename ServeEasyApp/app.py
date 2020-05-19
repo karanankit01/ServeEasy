@@ -1,13 +1,15 @@
-from flask import Flask,render_template,request,redirect
+from flask import Flask,render_template,request,redirect,url_for,session
 from flask_mysqldb import MySQL
 import MySQLdb
-
+import os
+from PIL import Image
+import sys
+import yaml
 
 app=Flask(__name__)
 
-import yaml
 db = yaml.load(open('db.yaml'))
-app.config['MYSQ_HOST'] = db['mysql_host']
+app.config['MYSQL_HOST'] = db['mysql_host']
 app.config['MYSQL_USER'] = db['mysql_user']
 app.config['MYSQL_PASSWORD'] = db['mysql_password']
 app.config['MYSQL_DB'] = db['mysql_db']
@@ -17,25 +19,49 @@ mysql = MySQL(app)
 user_details=()
 @app.route('/home')
 def home():
+    if 'user_id' in session:
+        return redirect(url_for('user_home'))
     return render_template('home.html',user_details=())
 
-@app.route('/index2')
-def index2():
-    return render_template('index2.html')
+@app.route('/logout')
+def logout():
+    if 'user_id' in session:
+        session.pop('user_id',None)
+    return redirect(url_for('home'))
 
-@app.route('/home/<int:user_id>')
-def user_home(user_id):
+@app.route('/user')
+def user_home():
     try:
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        query="SELECT name,username,email,phone,user_id from user where user_id = "+str(user_id)
-        cursor.execute(query)
-        user_details = cursor.fetchall()
-        return render_template('home.html',user_details=user_details)
+        # print(session)
+        # sys.stdout.flush()
+        if 'user_id' in session:
+            user_id = session['user_id']
+           # user_id = request.form('user_id')
+          #  print(user_id)
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            query="SELECT name,username,email,phone,user_id from user where user_id = "+str(user_id)
+            cursor.execute(query)
+            user_details = cursor.fetchall()
+            return render_template('home.html',user_details=user_details)
+        else:
+            return render_template('home.html',user_details=())
+           # return 5
     except Exception as e:
         return str(e)
 
+@app.route('/about')
+def about():
+    if 'user_id' in session:
+        user_id = session['user_id']
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        query="SELECT name,username,email,phone,user_id from user where user_id = "+str(user_id)	
+        cursor.execute(query)
+        user_details = cursor.fetchall()
+    else:
+        user_details = ()
+    return render_template('about.html',user_details=user_details)
 
-@app.route('/sign_up',methods=['POST'])
+@app.route('/sign_up',methods=['POST','GET'])
 def sign_up():
     if(request.method=='POST'):
         user_details = request.form
@@ -44,7 +70,6 @@ def sign_up():
         email = user_details['email']
         password = user_details['password']
         phone = user_details['phone']
-
         user_id = 0
         cur = mysql.connection.cursor()
         cur.execute("insert into user value(%s,%s,%s,%s,%s,%s,%s,%s)",(name,user_id,username,email,phone,password,'',''))
@@ -53,7 +78,7 @@ def sign_up():
         return redirect('/home')
     return render_template('sign_up.html')
 
-@app.route('/sign_in',methods=['POST'])
+@app.route('/sign_in',methods=['POST','GET'])
 def sign_in():
     if(request.method=='POST'):
         user_details = request.form
@@ -64,165 +89,241 @@ def sign_in():
             query="SELECT user_id AS user_id ,password AS password FROM user WHERE username ="+"'"+username+"'"
             cursor.execute(query)
             password_id_details = cursor.fetchall()
-            print(password_id_details)
+            #print(password_id_details)
             if(len(password_id_details)==0):
                 return "user dosn't exist try another or sign up"
             else:
                 if(user_password==password_id_details[0]['password']):
-                    url_for_user_home='/home/'+str(password_id_details[0]['user_id'])
-                    return redirect(url_for_user_home)
+                    #  url_for_user_home='/home/'+str(password_id_details[0]['user_id'])
+                    user_id = str(password_id_details[0]['user_id'])
+                    session['user_id'] = user_id
+                    return redirect(url_for('user_home'))
                 else:
                     return "wrong password try again"
         except Exception as e:
             return str(e)
     return render_template('sign_in.html')
 
-@app.route('/about/<user_id>')
-def about(user_id):
-    if(user_id!=0):
+@app.route('/my_products/add_new_product',methods=['POST','GET'])
+def add_new_product():
+    if 'user_id' in session:
+        user_id = session['user_id']
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         query="SELECT name,username,email,phone,user_id from user where user_id = "+str(user_id)
         cursor.execute(query)
         user_details = cursor.fetchall()
+        if(request.method=='POST'):
+            new_product_details = request.form
+            owner_id = int(user_id)
+            product_name = new_product_details['product_name']
+            est_price = int(new_product_details['est_price'])
+            short_discription = new_product_details['short_discription']
+            full_discription = new_product_details['full_discription']
+            product_type = new_product_details['type']
+            average_rating = 0
+            NO_OF_TIME = 0
+            product_id=''
+            if(product_type == '1'):
+                cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+                query="select * from physical_products ORDER BY product_id DESC LIMIT 1;"
+                cursor.execute(query)
+                last_row = cursor.fetchall()
+                product_id_no = int((last_row[0]['product_id']).split("-")[1])+1
+                product_id = (last_row[0]['product_id']).split("-")[0] + '-' + str(product_id_no)
+                query="insert into physical_products value(%s,%s,%s,%s,%s,%s,%s,%s)"
+                cursor.execute(query,[owner_id,product_name,est_price,product_id,average_rating,NO_OF_TIME,full_discription,short_discription])
+                query="insert into all_products value(%s,%s,%s,%s,%s,%s,%s,%s)"
+                cursor.execute(query,[owner_id,product_name,est_price,product_id,average_rating,NO_OF_TIME,full_discription,short_discription])
+                mysql.connection.commit()
+                cursor.close()
+            elif(product_type == '2'):
+                cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+                query="select * from programming_products ORDER BY product_id DESC LIMIT 1;"
+                cursor.execute(query)
+                last_row = cursor.fetchall()
+                product_id_no = int((last_row[0]['product_id']).split("-")[1])+1
+                product_id = (last_row[0]['product_id']).split("-")[0] + '-' + str(product_id_no)
+                query="insert into programming_products value(%s,%s,%s,%s,%s,%s,%s,%s)"
+                cursor.execute(query,[owner_id,product_name,est_price,product_id,average_rating,NO_OF_TIME,full_discription,short_discription])
+                query="insert into all_products value(%s,%s,%s,%s,%s,%s,%s,%s)"
+                cursor.execute(query,[owner_id,product_name,est_price,product_id,average_rating,NO_OF_TIME,full_discription,short_discription])
+                mysql.connection.commit()
+                cursor.close()
+            elif(product_type == '3'):
+                cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+                query="select * from design_products ORDER BY product_id DESC LIMIT 1;"
+                cursor.execute(query)
+                last_row = cursor.fetchall()
+                product_id_no = int((last_row[0]['product_id']).split("-")[1])+1
+                product_id = (last_row[0]['product_id']).split("-")[0] + '-' + str(product_id_no)
+                query="insert into design_products value(%s,%s,%s,%s,%s,%s,%s,%s)"
+                cursor.execute(query,[owner_id,product_name,est_price,product_id,average_rating,NO_OF_TIME,full_discription,short_discription])
+                query="insert into all_products value(%s,%s,%s,%s,%s,%s,%s,%s)"
+                cursor.execute(query,[owner_id,product_name,est_price,product_id,average_rating,NO_OF_TIME,full_discription,short_discription])
+                mysql.connection.commit()
+                cursor.close()
+            else:
+                cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+                query="select * from freestyle_products ORDER BY product_id DESC LIMIT 1;"
+                cursor.execute(query)
+                last_row = cursor.fetchall()
+                product_id_no = int((last_row[0]['product_id']).split("-")[1])+1
+                product_id = (last_row[0]['product_id']).split("-")[0] + '-' + str(product_id_no)
+                query="insert into freestyle_products value(%s,%s,%s,%s,%s,%s,%s,%s)"
+                cursor.execute(query,[owner_id,product_name,est_price,product_id,average_rating,NO_OF_TIME,full_discription,short_discription])
+                query="insert into all_products value(%s,%s,%s,%s,%s,%s,%s,%s)"
+                cursor.execute(query,[owner_id,product_name,est_price,product_id,average_rating,NO_OF_TIME,full_discription,short_discription])
+                mysql.connection.commit()
+                cursor.close()
+            try:
+                redirect_url = '/my_products'
+                return redirect(redirect_url)
+            except Exception as e:
+                return str(e)
+        return render_template('add_new_product.html',user_details=user_details)
     else:
-        user_details = ()
-    return render_template('about.html',user_details=user_details)
+        redirect('/sign_in')
 
-@app.route('/my_products/<user_id>/add_new_product',methods=['POST','GET'])
-def add_new_product(user_id):
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    query="SELECT name,username,email,phone,user_id from user where user_id = "+str(user_id)
-    cursor.execute(query)
-    user_details = cursor.fetchall()
-    if(request.method=='POST'):
-        new_product_details = request.form
-        owner_id = int(user_id)
-        product_name = new_product_details['product_name']
-        est_price = int(new_product_details['est_price'])
-        short_discription = new_product_details['short_discription']
-        full_discription = new_product_details['full_discription']
-        product_type = new_product_details['type']
-        average_rating = 0
-        NO_OF_TIME = 0
-        product_id=''
-        if(product_type == '1'):
-            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            query="select * from physical_products ORDER BY product_id DESC LIMIT 1;"
-            cursor.execute(query)
-            last_row = cursor.fetchall()
-            product_id_no = int((last_row[0]['product_id']).split("-")[1])+1
-            product_id = (last_row[0]['product_id']).split("-")[0] + '-' + str(product_id_no)
-            query="insert into physical_products value(%s,%s,%s,%s,%s,%s,%s,%s)"
-            cursor.execute(query,[owner_id,product_name,est_price,product_id,average_rating,NO_OF_TIME,full_discription,short_discription])
-            query="insert into all_products value(%s,%s,%s,%s,%s,%s,%s,%s)"
-            cursor.execute(query,[owner_id,product_name,est_price,product_id,average_rating,NO_OF_TIME,full_discription,short_discription])
-            mysql.connection.commit()
-            cursor.close()
-        elif(product_type == '2'):
-            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            query="select * from programming_products ORDER BY product_id DESC LIMIT 1;"
-            cursor.execute(query)
-            last_row = cursor.fetchall()
-            product_id_no = int((last_row[0]['product_id']).split("-")[1])+1
-            product_id = (last_row[0]['product_id']).split("-")[0] + '-' + str(product_id_no)
-            query="insert into programming_products value(%s,%s,%s,%s,%s,%s,%s,%s)"
-            cursor.execute(query,[owner_id,product_name,est_price,product_id,average_rating,NO_OF_TIME,full_discription,short_discription])
-            query="insert into all_products value(%s,%s,%s,%s,%s,%s,%s,%s)"
-            cursor.execute(query,[owner_id,product_name,est_price,product_id,average_rating,NO_OF_TIME,full_discription,short_discription])
-            mysql.connection.commit()
-            cursor.close()
-        elif(product_type == '3'):
-            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            query="select * from design_products ORDER BY product_id DESC LIMIT 1;"
-            cursor.execute(query)
-            last_row = cursor.fetchall()
-            product_id_no = int((last_row[0]['product_id']).split("-")[1])+1
-            product_id = (last_row[0]['product_id']).split("-")[0] + '-' + str(product_id_no)
-            query="insert into design_products value(%s,%s,%s,%s,%s,%s,%s,%s)"
-            cursor.execute(query,[owner_id,product_name,est_price,product_id,average_rating,NO_OF_TIME,full_discription,short_discription])
-            query="insert into all_products value(%s,%s,%s,%s,%s,%s,%s,%s)"
-            cursor.execute(query,[owner_id,product_name,est_price,product_id,average_rating,NO_OF_TIME,full_discription,short_discription])
-            mysql.connection.commit()
-            cursor.close()
-        else:
-            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            query="select * from freestyle_products ORDER BY product_id DESC LIMIT 1;"
-            cursor.execute(query)
-            last_row = cursor.fetchall()
-            product_id_no = int((last_row[0]['product_id']).split("-")[1])+1
-            product_id = (last_row[0]['product_id']).split("-")[0] + '-' + str(product_id_no)
-            query="insert into freestyle_products value(%s,%s,%s,%s,%s,%s,%s,%s)"
-            cursor.execute(query,[owner_id,product_name,est_price,product_id,average_rating,NO_OF_TIME,full_discription,short_discription])
-            query="insert into all_products value(%s,%s,%s,%s,%s,%s,%s,%s)"
-            cursor.execute(query,[owner_id,product_name,est_price,product_id,average_rating,NO_OF_TIME,full_discription,short_discription])
-            mysql.connection.commit()
-            cursor.close()
+
+
+@app.route('/profile/upload',methods=['GET','POST'])
+def upload():
+    if 'user_id' in session:
+        user_id = session['user_id']
         try:
-            redirect_url = '/my_products/' + str(user_id)
-            return redirect(redirect_url)
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            if(request.method=='POST'):
+                pic=request.files['file']
+                file_name = pic.filename
+
+                file_extension = os.path.splitext(file_name)[1]
+
+                file_path = "/home/mukul/Desktop/serveEasy/clone2/ServeEasy/ServeEasyApp/static/image/profile_pic/profile"+str(user_id)
+                new_path = file_path+file_extension
+                file_name = "profile"+str(user_id)+file_extension
+
+                query = "select profile_pic from user where user_id = "+str(user_id)
+                cursor.execute(query)
+                pic_status = cursor.fetchall()[0]['profile_pic']
+                if pic_status:
+                    pic_extension = os.path.splitext(pic_status)[1]
+                    temp_path = file_path+pic_extension
+                    os.remove(temp_path)
+                    pic.save(new_path)
+                else:
+                    pic.save(new_path)
+
+                query="update user set profile_pic = %s where user_id = "+str(user_id)
+                cursor.execute(query,[file_name])
+                mysql.connection.commit()
+                cursor.close()
+            return redirect('/profile')
         except Exception as e:
             return str(e)
-    return render_template('add_new_product.html',user_details=user_details)
+    else:
+        return redirect('/profile')
 
-@app.route('/profile/upload/<user_id>',methods=['POST'])
-def upload(user_id):
-    try:
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        if(request.method=='POST'):
-            pic=request.files['file']
-            # print(pic)
-            query="update user set profile_pic = %s where user_id = "+str(user_id)
-            cursor.execute(query,[pic])
-            mysql.connection.commit()
-            cursor.close()
-        return redirect('/profile/'+user_id)
-    except Exception as e:
-        return str(e)
 
-@app.route('/profile/<user_id>',methods=['GET'])
-def profile(user_id):
-    try:
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        if(user_id!=-1):
-            query="SELECT profile_pic,discribe_yourself,name,username,email,phone,user_id from user where user_id = "+str(user_id)
+
+
+@app.route('/profile',methods=['GET'])
+def profile():
+    if 'user_id' in session:
+        try:
+            user_id = session['user_id']
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            if(user_id!=-1):
+                query="SELECT discribe_yourself,profile_pic,name,username,email,phone,user_id from user where user_id = "+str(user_id)
+                cursor.execute(query)
+                user_details = cursor.fetchall()
+            #  user_details[0]['profile_pic'].show()
+
+            #  print("s = ",user_details[0]['name'])
+            else:
+                user_details=()
+            query="SELECT product_id as product_id, product_name as product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from all_products where owner_id = "+str(user_id)
             cursor.execute(query)
-            user_details = cursor.fetchall()
-        else:
-            user_details=()
-        query="SELECT product_id as product_id, product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from all_products where owner_id = "+"'"+user_id+"'"
-        cursor.execute(query)
-        my_products = cursor.fetchall()
-        # print(user_details)
-        return render_template('profile.html',my_products=my_products,user_details=user_details)
-    except Exception as e:
-        return str(e)
+            my_products = cursor.fetchall()
+            #print(user_details)
+            return render_template('profile.html',my_products=my_products,user_details=user_details)
 
-@app.route('/my_products/<user_id>',methods=['GET'])
-def my_products(user_id):
+        except Exception as e:
+            return str(e)
+    else:
+        redirect('/sign_in')
+
+@app.route('/product/<product_id>',methods=['POST','GET'])
+def product(product_id):
     try:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        if(user_id!=-1):
+        cursor.execute("select * from all_products inner join user on all_products.owner_id = user.user_id inner join product_display_pic on all_products.product_id = product_display_pic.product_id   where all_products.product_id  = %s",[product_id])
+        product_and_owner_description = cursor.fetchall()
+        # print(product_and_owner_description)
+        if 'user_id' in session:
+            user_id = session['user_id']
+            if(request.method =='POST'):
+                pic=request.files['file']
+                file_name = pic.filename
+
+                file_extension = os.path.splitext(file_name)[1]
+
+                file_path = "/home/mukul/Desktop/serveEasy/clone2/ServeEasy/ServeEasyApp/static/image/product_display_pic/product_"+str(product_id)
+                new_path = file_path+file_extension
+                file_name = "product_"+str(product_id)+file_extension
+
+                query = "select * from product_display_pic where product_display_pic.product_id = '"+str(product_id)+"'"
+                print(query)
+                cursor.execute(query)
+                pic_status = cursor.fetchall()[0]['display_pic']
+                # print(pic_status,"*************************")
+                # print(new_path)
+                # print(file_name)
+                if pic_status:
+                    pic_extension = os.path.splitext(pic_status)[1]
+                    temp_path = file_path+pic_extension
+                    os.remove(temp_path)
+                    pic.save(new_path)
+                else:
+                    pic.save(new_path)
+                query="update product_display_pic set product_display_pic.display_pic = %s where product_id = '"+str(product_id)+"'"
+                cursor.execute(query,[file_name])
+                mysql.connection.commit()
             query="SELECT name,username,email,phone,user_id from user where user_id = "+str(user_id)
             cursor.execute(query)
             user_details = cursor.fetchall()
-        else:
-            user_details=()
-        query="SELECT short_discription as short_discription, product_name AS  product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from all_products where owner_id = "+"'"+user_id+"'"
-        cursor.execute(query)
-        my_products = cursor.fetchall()
-        return render_template('my_products.html',my_products=my_products,user_details=user_details)
+            cursor.close()
+            return render_template('product.html',user_details=user_details,product_and_owner_description=product_and_owner_description)
+        return redirect('/sign_in')
     except Exception as e:
         return str(e)
 
-@app.route('/products/all/<user_id>',methods=['GET'])
-def all_product(user_id):
-    user_id=int(user_id)
+@app.route('/my_products',methods=['GET'])
+def my_products():
+    try:
+        if 'user_id' in session:
+            user_id = session['user_id']
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            query="SELECT name,username,email,phone,user_id from user where user_id = "+str(user_id)
+            cursor.execute(query)
+            user_details = cursor.fetchall()
+            query="SELECT * from all_products inner join product_display_pic on all_products.product_id = product_display_pic.product_id where owner_id = "+"'"+user_id+"'"
+            cursor.execute(query)
+            my_products = cursor.fetchall()
+            return render_template('my_products.html',my_products=my_products,user_details=user_details)
+        else:
+            redirect('/sign_in')
+    except Exception as e:
+        return str(e)
+
+@app.route('/products/all',methods=['GET'])
+def all_product():
     try:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute("SELECT short_discription as short_discription, product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from all_products;")
+        cursor.execute("SELECT * from all_products inner join product_display_pic on all_products.product_id = product_display_pic.product_id")
         all_products = cursor.fetchall()
         # print(user_id)
-        if(user_id!=-1):
+        if 'user_id' in session:
+            user_id = session['user_id']
             query="SELECT name,username,email,phone,user_id from user where user_id = "+str(user_id)
             cursor.execute(query)
             user_details = cursor.fetchall()
@@ -233,13 +334,14 @@ def all_product(user_id):
     except Exception as e:
         return str(e)
 
-@app.route('/products/programming/<int:user_id>',methods=['GET'])
-def programming_products(user_id):
+@app.route('/products/programming',methods=['GET'])
+def programming_products():
     try:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute("SELECT short_discription as short_discription, product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from programming_products;")
+        cursor.execute("SELECT * from programming_products inner join product_display_pic on programming_products.product_id = product_display_pic.product_id")
         programming_products = cursor.fetchall()
-        if(user_id!=-1):
+        if 'user_id' in session:
+            user_id = session['user_id']
             query="SELECT name,username,email,phone,user_id from user where user_id = "+str(user_id)
             cursor.execute(query)
             user_details = cursor.fetchall()
@@ -249,13 +351,14 @@ def programming_products(user_id):
     except Exception as e:
         return str(e)
 
-@app.route('/products/freestyle/<int:user_id>',methods=['GET'])
-def freestyle_products(user_id):
+@app.route('/products/freestyle',methods=['GET'])
+def freestyle_products():
     try:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute("SELECT short_discription as short_discription, product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from freestyle_products;")
+        cursor.execute("SELECT * from freestyle_products inner join product_display_pic on freestyle_products.product_id = product_display_pic.product_id")
         freestyle_products = cursor.fetchall()
-        if(user_id!=-1):
+        if 'user_id' in session:
+            user_id = session['user_id']
             query="SELECT name,username,email,phone,user_id from user where user_id = "+str(user_id)
             cursor.execute(query)
             user_details = cursor.fetchall()
@@ -265,13 +368,14 @@ def freestyle_products(user_id):
     except Exception as e:
         return str(e)
 
-@app.route('/products/design/<int:user_id>',methods=['GET'])
-def design_products(user_id):
+@app.route('/products/design',methods=['GET'])
+def design_products():
     try:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute("SELECT short_discription as short_discription, product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from design_products;")
+        cursor.execute("SELECT * from design_products inner join product_display_pic on design_products.product_id = product_display_pic.product_id")
         design_products = cursor.fetchall()
-        if(user_id!=-1):
+        if 'user_id' in session:
+            user_id = session['user_id']
             query="SELECT name,username,email,phone,user_id from user where user_id = "+str(user_id)
             cursor.execute(query)
             user_details = cursor.fetchall()
@@ -281,13 +385,14 @@ def design_products(user_id):
     except Exception as e:
         return str(e)
 
-@app.route('/products/physical/<int:user_id>',methods=['GET'])
-def physical_products(user_id):
+@app.route('/products/physical',methods=['GET'])
+def physical_products():
     try:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute("SELECT short_discription as short_discription, product_name AS product_name, est_price as est_price, average_rating as average_rating, NO_OF_TIME as no_of_time from physical_products;")
+        cursor.execute("SELECT * from physical_products inner join product_display_pic on physical_products.product_id = product_display_pic.product_id")
         physical_products = cursor.fetchall()
-        if(user_id!=-1):
+        if 'user_id' in session:
+            user_id = session['user_id']
             query="SELECT name,username,email,phone,user_id from user where user_id = "+str(user_id)
             cursor.execute(query)
             user_details = cursor.fetchall()
@@ -297,5 +402,7 @@ def physical_products(user_id):
     except Exception as e:
         return str(e)
 
+app.secret_key = os.urandom(16)
 if __name__=='__main__':
     app.run(debug=True)
+
