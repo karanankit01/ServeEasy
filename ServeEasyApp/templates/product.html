@@ -2,7 +2,7 @@
 
 
 {%  block head %}
-<title> sign_up </title>
+<title> {{ product_and_owner_description[0].product_name }} </title>
 {% endblock %}
 
 {%  block body %}
@@ -117,27 +117,75 @@
         {% endif %}
     </nav>
 
-    <div class="container  main_container">
+
+
+    <div class="container-fluid row main_container">
 
         <!-- write any page content here -->
-        <br>
-        <h1>sign_up page</h1>
-        <br>
+        <div class="product_main column">
+            <div class="product_main_left">
+                <br>
+                <h1>{{ product_and_owner_description[0].product_name }}</h1>
+                <br>
+                <div class="show_product shadow-lg border border-dark bg-white">
+                    <h3>
+                        this product has {{product_and_owner_description[0].average_rating}} rating rated by
+                        {{ product_and_owner_description[0].NO_OF_TIME }} people
+                    </h3>
+                    <br>
+                    {{ product_and_owner_description[0].full_discription }}
+                    <br>
+                    {% if product_and_owner_description[0].owner_id == user_details[0].user_id %}
+                    <a class="btn btn-dark" href='#'>edit</a>
+                    <a class="btn btn-dark" href='#'>delete</a>
+                    {% else %}
+                    <a class="btn btn-dark" href='#'>buy</a>
+                    <a class="btn btn-dark" href='#'>like</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="product_main_right">
+                <div class="shadow-lg border border-dark bg-white">
+                    owner of the product {{ product_and_owner_description[0].name }}
+                    <div class="profile_pic_box">
+                        {% if product_and_owner_description[0].profile_pic %}
+                        <img src="{{ url_for('static',filename='image/profile_pic/'+product_and_owner_description[0].profile_pic) }}">
+                        {% else %}
+                        <img src="{{ url_for('static',filename='image/default_images/default_profile_pic.png') }}">
+                        {% endif %}
+                    </div>
+                    {% set product = product_and_owner_description[0] %}
+                    {% if product.display_pic %}
+                    {% set url_display = url_for('static',filename='image/product_display_pic/'+product.display_pic) %}
+                    {% else %}
+                    {% set url_display = url_for('static',filename='image/default_images/default_product_display_pic.png') %}
+                    {% endif%}
+                    {% if product_and_owner_description[0].owner_id == user_details[0].user_id %}
+                    <h3>
+                        your current product display is this
+                    </h3>
+                    <div class="shadow-lg product_container">
+                        <img src="{{ url_display }}" width="100%">
+                        <div class="product_container_context">
 
-        <form method='POST' action='/sign_up'>
-            name <input type='text' name='name'>
-            <br>
-            username <input type='text' name='username'>
-            <br>
-            email <input type='text' name='email'>
-            <br>
-            password <input type='password' name='password'>
-            <br>
-            phone <input type='number' default=0 name='phone'>
-            <br>
-            <input type='submit' class='btn bg-drak'>
-        </form>
-
+                        </div>
+                    </div>
+                    <h3>
+                        change display backgroung pic
+                    </h3>
+                    <form action="/product/{{ product_and_owner_description[0].product_id }}" method="POST"
+                        enctype="multipart/form-data">
+                        <input type="file" name="file" />
+                        <input type="submit" />
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <br><br><br><br><br><br>
+        <div class="product_gallary column shadow-lg border border-dark bg-white">
+            here we display images and videos of the product
+        </div>
     </div>
 
 
@@ -151,8 +199,11 @@
                         <h3>Company</h3>
                         <ul>
                             <li>
-                                <a href="/about">About us</a>
-                                
+                                {% if user_details %}
+                                <a href="/about/{{ user_details[0].user_id }}">About us</a>
+                                {% else %}
+                                <a href="/about/0">About us</a>
+                                {% endif %}
                             </li>
                             <li><a href="#">We are hiring</a></li>
                             <li><a href="#">Meet the team</a></li>
@@ -244,7 +295,11 @@
                     <ul class="pull-right">
                         <li><a href="/home">Home</a></li>
                         <li>
-                            <a href="/about">About us</a>
+                            {% if user_details %}
+                            <a href="/about/{{ user_details[0].user_id }}">About us</a>
+                            {% else %}
+                            <a href="/about/0">About us</a>
+                            {% endif %}
                         </li>
                         <li><a href="#">Faq</a></li>
                         <li><a href="#">Contact Us</a></li>

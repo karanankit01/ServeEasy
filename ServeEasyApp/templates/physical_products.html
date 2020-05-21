@@ -7,35 +7,22 @@
 
 {%  block body %}
 <nav id="sidebar">
-
     <ul class="list-unstyled components">
         <div class="sidebar-header">
             <h3>ServeEasy</h3>
         </div>
         <li class="active">
-            {% if user_details %}
-            <a href="/about/{{ user_details[0].user_id }}">About</a>
-            {% else %}
-            <a href="/about/0">About</a>
-            {% endif %}
+            <a href="/about">About</a>
         </li>
         <li class="active">
             <a class="dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true"
                 aria-expanded="false">Products</a>
             <div class="dropdown-menu" aria-labelledby="dropdown01">
-                {% if user_details %}
-                <a class="dropdown-item" href="/products/all/{{ user_details[0].user_id }}">all</a>
-                <a class="dropdown-item" href="/products/programming/{{ user_details[0].user_id }}">Programming</a>
-                <a class="dropdown-item" href="/products/freestyle/{{ user_details[0].user_id }}">Freestyle</a>
-                <a class="dropdown-item" href="/products/design/{{ user_details[0].user_id }}">Design</a>
-                <a class="dropdown-item" href="/products/physical/{{ user_details[0].user_id }}">Physical</a>
-                {% else %}
-                <a class="dropdown-item" href="/products/all/-1">all</a>
-                <a class="dropdown-item" href="/products/programming/-1">Programming</a>
-                <a class="dropdown-item" href="/products/freestyle/-1">Freestyle</a>
-                <a class="dropdown-item" href="/products/design/-1">Design</a>
-                <a class="dropdown-item" href="/products/physical/-1">Physical</a>
-                {% endif %}
+                <a class="dropdown-item" href="/products/all">all</a>
+                <a class="dropdown-item" href="/products/programming">Programming</a>
+                <a class="dropdown-item" href="/products/freestyle">Freestyle</a>
+                <a class="dropdown-item" href="/products/design">Design</a>
+                <a class="dropdown-item" href="/products/physical">Physical</a>
             </div>
         </li>
         <li class="active">
@@ -78,19 +65,12 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                {% if user_details %}
                 <li class="nav-item active">
-                    <a class="nav-link" href="/home/{{ user_details[0].user_id }}">Home <span
-                            class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="/user">Home <span class="sr-only">(current)</span></a>
                 </li>
-                {% else %}
-                <li class="nav-item active">
-                    <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
-                </li>
-                {% endif %}
                 {% if user_details %}
                 <li class="nav-item">
-                    <a class="nav-link" href="/my_orders/{{ user_details[0].user_id }}">My Orders</a>
+                    <a class="nav-link" href="/my_orders">My Orders</a>
                 </li>
                 {% else %}
                 <li class="nav-item">
@@ -99,11 +79,11 @@
                 {% endif %}
                 {% if user_details %}
                 <li class="nav-item">
-                    <a class="nav-link disabled" href="/my_products/{{ user_details[0].user_id }}">My Products</a>
+                    <a class="nav-link" href="/my_products">My Products</a>
                 </li>
                 {% else %}
                 <li class="nav-item">
-                    <a class="nav-link disabled" href="/my_products/{{ user_details[0].user_id }}">My Products</a>
+                    <a class="nav-link" href="/sign_in">My Products</a>
                 </li>
                 {% endif %}
                 <li class="nav-item dropdown">
@@ -127,7 +107,8 @@
         </div>
         {% if user_details %}
 
-        <a class="navbar-brand" href="/profile/{{ user_details[0].user_id }}">My profile</a>
+        <a class="navbar-brand" href="/profile">My profile</a>
+        <a class="navbar-brand" href="/logout">logout</a>
 
         {% else %}
         <a class="navbar-brand" href="/sign_up">sign up</a>
@@ -146,49 +127,77 @@
         <h1>physical</h1>
         <br>
         {% set len = physical_products | length %}
-        {% for i in range(0,len//3 +1 ) %}
+        {% if (len%3!=0) %}
+        {% set itr = len//3 +1 %}
+        {% else %}
+        {% set itr = len//3 %}
+        {% endif %}
+        {% for i in range(0,itr) %}
         {% set count = 3*i %}
         <div class="row">
             {% set product = physical_products[count] %}
-            <div class="column shadow-lg border border-dark bg-white">
-                <h2> {{ product.product_name }} </h2>
-                <small>estimated price {{product.est_price }} with rating {{product.average_rating}} by
-                    {{product.no_of_time}} persons</small>
+            {% if product.display_pic %}
+            {% set url_display = url_for('static',filename='image/product_display_pic/'+product.display_pic) %}
+            {% else %}
+            {% set url_display = url_for('static',filename='image/default_images/default_product_display_pic.png') %}
+            {% endif%}
+            <div class="column shadow-lg  product_container">
+                <img src="{{ url_display }}" width="100%">
+                <div class="product_container_context">
+                    <h1><a href="/product/{{ product.product_id }}"> {{ product.product_name }} </a></h1>
+                    <small>estimated price {{product.est_price }} with rating {{product.average_rating}} by
+                        {{product.no_of_time}} persons</small>
 
-                <br>
-                <p style="white-space:pre-wrap"> {{ product.short_discription }} </p>
-                <a class="btn btn-dark" href='#'>buy</a>
-                <a class="btn btn-dark" href='#'>like</a>
+                    <br>
+                    <p style="white-space:pre-wrap"> {{ product.short_discription }} </p>
+                    <a class="btn btn-dark" href='#'>buy</a>
+                    <a class="btn btn-dark" href='#'>like</a>
+                </div>
             </div>
             <br>
 
             {% if (count+1 < len) %}
             {% set product = physical_products[count+1] %}
+            {% if product.display_pic %}
+            {% set url_display = url_for('static',filename='image/product_display_pic/'+product.display_pic) %}
+            {% else %}
+            {% set url_display = url_for('static',filename='image/default_images/default_product_display_pic.png') %}
+            {% endif%}
+            <div class="column shadow-lg  product_container">
+                <img src="{{ url_display }}" width="100%">
+                <div class="product_container_context">
+                    <h1><a href="/product/{{ product.product_id }}"> {{ product.product_name }} </a></h1>
+                    <small>estimated price {{product.est_price }} with rating {{product.average_rating}} by
+                        {{product.no_of_time}} persons</small>
 
-            <div class="column shadow-lg border border-dark  bg-white"">
-                <h2> {{ product.product_name }} </h2>
-                <small>estimated price {{product.est_price }} with rating {{product.average_rating}} by
-                    {{product.no_of_time}} persons</small>
-
-                <br>
-                <p style="white-space:pre-wrap"> {{ product.short_discription }} </p>
-                <a class="btn btn-dark" href='#'>buy</a>
-                <a class="btn btn-dark" href='#'>like</a>
+                    <br>
+                    <p style=" white-space:pre-wrap"> {{ product.short_discription }} </p>
+                    <a class="btn btn-dark" href='#'>buy</a>
+                    <a class="btn btn-dark" href='#'>like</a>
+                </div>
             </div>
             <br>
             {% endif %}
 
             {% if (count+2 < len) %}
             {% set product = physical_products[count+2] %}
-            <div class="column shadow-lg border border-dark  bg-white">
-                <h2> {{ product.product_name }} </h2>
-                <small>estimated price {{product.est_price }} with rating {{product.average_rating}} by
-                    {{product.no_of_time}} persons</small>
+            {% if product.display_pic %}
+            {% set url_display = url_for('static',filename='image/product_display_pic/'+product.display_pic) %}
+            {% else %}
+            {% set url_display = url_for('static',filename='image/default_images/default_product_display_pic.png') %}
+            {% endif%}
+            <div class="column shadow-lg  product_container">
+                <img src="{{ url_display }}" width="100%">
+                <div class="product_container_context">
+                    <h1><a href="/product/{{ product.product_id }}"> {{ product.product_name }} </a></h1>
+                    <small>estimated price {{product.est_price }} with rating {{product.average_rating}} by
+                        {{product.no_of_time}} persons</small>
 
-                <br>
-                <p style="white-space:pre-wrap"> {{ product.short_discription }} </p>
-                <a class="btn btn-dark" href='#'>buy</a>
-                <a class="btn btn-dark" href='#'>like</a>
+                    <br>
+                    <p style="white-space:pre-wrap"> {{ product.short_discription }} </p>
+                    <a class="btn btn-dark" href='#'>buy</a>
+                    <a class="btn btn-dark" href='#'>like</a>
+                </div>
             </div>
             <br>
             {% endif %}

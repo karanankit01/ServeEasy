@@ -12,29 +12,17 @@
             <h3>ServeEasy</h3>
         </div>
         <li class="active">
-            {% if user_details %}
-            <a href="/about/{{ user_details[0].user_id }}">About</a>
-            {% else %}
-            <a href="/about/0">About</a>
-            {% endif %}
+            <a href="/about">About</a>
         </li>
         <li class="active">
             <a class="dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true"
                 aria-expanded="false">Products</a>
             <div class="dropdown-menu" aria-labelledby="dropdown01">
-                {% if user_details %}
-                <a class="dropdown-item" href="/products/all/{{ user_details[0].user_id }}">all</a>
-                <a class="dropdown-item" href="/products/programming/{{ user_details[0].user_id }}">Programming</a>
-                <a class="dropdown-item" href="/products/freestyle/{{ user_details[0].user_id }}">Freestyle</a>
-                <a class="dropdown-item" href="/products/design/{{ user_details[0].user_id }}">Design</a>
-                <a class="dropdown-item" href="/products/physical/{{ user_details[0].user_id }}">Physical</a>
-                {% else %}
-                <a class="dropdown-item" href="/products/all/-1">all</a>
-                <a class="dropdown-item" href="/products/programming/-1">Programming</a>
-                <a class="dropdown-item" href="/products/freestyle/-1">Freestyle</a>
-                <a class="dropdown-item" href="/products/design/-1">Design</a>
-                <a class="dropdown-item" href="/products/physical/-1">Physical</a>
-                {% endif %}
+                <a class="dropdown-item" href="/products/all">all</a>
+                <a class="dropdown-item" href="/products/programming">Programming</a>
+                <a class="dropdown-item" href="/products/freestyle">Freestyle</a>
+                <a class="dropdown-item" href="/products/design">Design</a>
+                <a class="dropdown-item" href="/products/physical">Physical</a>
             </div>
         </li>
         <li class="active">
@@ -77,19 +65,13 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                {% if user_details %}
                 <li class="nav-item active">
-                    <a class="nav-link" href="/home/{{ user_details[0].user_id }}">Home <span
+                    <a class="nav-link" href="/user">Home <span
                             class="sr-only">(current)</span></a>
                 </li>
-                {% else %}
-                <li class="nav-item active">
-                    <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
-                </li>
-                {% endif %}
                 {% if user_details %}
                 <li class="nav-item">
-                    <a class="nav-link" href="/my_orders/{{ user_details[0].user_id }}">My Orders</a>
+                    <a class="nav-link" href="/my_orders">My Orders</a>
                 </li>
                 {% else %}
                 <li class="nav-item">
@@ -98,7 +80,7 @@
                 {% endif %}
                 {% if user_details %}
                 <li class="nav-item">
-                    <a class="nav-link" href="/my_products/{{ user_details[0].user_id }}">My Products</a>
+                    <a class="nav-link" href="/my_products">My Products</a>
                 </li>
                 {% else %}
                 <li class="nav-item">
@@ -126,7 +108,8 @@
         </div>
         {% if user_details %}
 
-        <a class="navbar-brand" href="/profile/{{ user_details[0].user_id }}">My profile</a>
+        <a class="navbar-brand" href="/profile">My profile</a>
+        <a class="navbar-brand" href="/logout">logout</a>
 
         {% else %}
         <a class="navbar-brand" href="/sign_up">sign up</a>
@@ -160,11 +143,7 @@
                         <h3>Company</h3>
                         <ul>
                             <li>
-                                {% if user_details %}
-                                <a href="/about/{{ user_details[0].user_id }}">About us</a>
-                                {% else %}
-                                <a href="/about/0">About us</a>
-                                {% endif %}
+                                <a href="/about">About us</a>
                             </li>
                             <li><a href="#">We are hiring</a></li>
                             <li><a href="#">Meet the team</a></li>
@@ -256,11 +235,7 @@
                     <ul class="pull-right">
                         <li><a href="/home">Home</a></li>
                         <li>
-                            {% if user_details %}
-                            <a href="/about/{{ user_details[0].user_id }}">About us</a>
-                            {% else %}
-                            <a href="/about/0">About us</a>
-                            {% endif %}
+                            <a href="/about">About us</a>
                         </li>
                         <li><a href="#">Faq</a></li>
                         <li><a href="#">Contact Us</a></li>

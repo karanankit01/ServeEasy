@@ -136,31 +136,48 @@
         {% endif %}
     </nav>
 
-    <div class="container  main_container">
-
-        <!-- write any page content here -->
-        <br>
-        <h1>Add New Product</h1>
-        <br>
-
-        <form method='POST' action='/my_products/{{ user_details[0].user_id }}/add_new_product'>
-            Product Type: <select name='type'>
-                <option value='1' stud_name='ph'>Physical Product</option>
-                <option value='2' stud_name='p'>Programming Product</option>
-                <option value='3' stud_name='d'>Design Product</option>
-                <option value='4' stud_name='f'>Freestyle Product</option>
-            </select>
+    <div class="container-fluid row  main_container">
+        <div class="column_product">
             <br>
-            product name <input type='text' name='product_name'>
+            <h1>Add New Product</h1>
             <br>
-            price <input type='text' name='est_price'>
-            <br>
-            Short discription to display <input type='text' name='short_discription'>
-            <br>
-            full discription <textarea class="form-control" type='text' name='full_discription' placeholder="write your Disciption here"
-            aria-label="write your discription here" rows="3"></textarea>
-            <a class='btn bg-drak'><input type='submit' value="submit"></a>
-        </form>
+            <form method='POST' action='/my_products/{{ user_details[0].user_id }}/add_new_product'>
+                Product Type: <select name='type'>
+                    <option value='1' stud_name='ph'>Physical Product</option>
+                    <option value='2' stud_name='p'>Programming Product</option>
+                    <option value='3' stud_name='d'>Design Product</option>
+                    <option value='4' stud_name='f'>Freestyle Product</option>
+                </select>
+                <br>
+                product name <input type='text' name='product_name'>
+                <br>
+                price <input type='text' name='est_price'>
+                <br>
+                Short discription to display <input type='text' name='short_discription'>
+                <br>
+                full discription <textarea class="form-control" type='text' name='full_discription'
+                    placeholder="write your Disciption here" aria-label="write your discription here"
+                    rows="3"></textarea>
+                <a class='btn bg-drak'><input type='submit' value="submit"></a>
+            </form>
+        </div>
+        <div class="column_product">
+            <h3>
+                your product background image in display
+            </h3>
+            <div class="product_pic_box">
+                {% if user_details[0].profile_pic %}
+                <img src="{{ url_for('static',filename='image/product_display_pic/'+user_details[0].profile_pic) }}">
+                {% else %}
+                <img src="{{ url_for('static',filename='image/default_images/default_product_display_pic.png') }}">
+                {% endif %}
+            </div>
+            <form method='POST' action='/my_products/{{ user_details[0].user_id }}/add_new_product/upload'
+                enctype="multipart/form-data">
+                <input type="file" name="file" />
+                <input type="submit" />
+            </form>
+        </div>
 
     </div>
 
