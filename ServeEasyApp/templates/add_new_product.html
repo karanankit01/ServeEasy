@@ -78,32 +78,25 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                {% if user_details %}
                 <li class="nav-item active">
-                    <a class="nav-link" disable="true" href="/home/{{ user_details[0].user_id }}">Home <span
-                            class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="/user">Home <span class="sr-only">(current)</span></a>
+                </li>
+                {% if user_details %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/my_orders">My Orders</a>
                 </li>
                 {% else %}
-                <li class="nav-item active">
-                    <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
+                <li class="nav-item">
+                    <a class="nav-link" href="/sign_in">My Orders</a>
                 </li>
                 {% endif %}
                 {% if user_details %}
                 <li class="nav-item">
-                    <a class="nav-link" disable="true" href="#">My Orders</a>
+                    <a class="nav-link" href="/my_products">My Products</a>
                 </li>
                 {% else %}
                 <li class="nav-item">
-                    <a class="nav-link" disable="true" href="#">My Orders</a>
-                </li>
-                {% endif %}
-                {% if user_details %}
-                <li class="nav-item">
-                    <a class="nav-link" disable="true" href="#">My Products</a>
-                </li>
-                {% else %}
-                <li class="nav-item">
-                    <a class="nav-link" disabled="disabled" href="#">My Products</a>
+                    <a class="nav-link" href="/sign_in">My Products</a>
                 </li>
                 {% endif %}
                 <li class="nav-item dropdown">
@@ -127,7 +120,8 @@
         </div>
         {% if user_details %}
 
-        <a class="navbar-brand" href="/profile/{{ user_details[0].user_id }}">My profile</a>
+        <a class="navbar-brand" href="/profile">My profile</a>
+        <a class="navbar-brand" href="/logout">logout</a>
 
         {% else %}
         <a class="navbar-brand" href="/sign_up">sign up</a>
