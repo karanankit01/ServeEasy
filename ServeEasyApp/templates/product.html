@@ -149,7 +149,8 @@
                     owner of the product {{ product_and_owner_description[0].name }}
                     <div class="profile_pic_box">
                         {% if product_and_owner_description[0].profile_pic %}
-                        <img src="{{ url_for('static',filename='image/profile_pic/'+product_and_owner_description[0].profile_pic) }}">
+                        <img
+                            src="{{ url_for('static',filename='image/profile_pic/'+product_and_owner_description[0].profile_pic) }}">
                         {% else %}
                         <img src="{{ url_for('static',filename='image/default_images/default_profile_pic.png') }}">
                         {% endif %}
@@ -182,10 +183,75 @@
                 </div>
             </div>
         </div>
-        <br><br><br><br><br><br>
-        <div class="product_gallary column shadow-lg border border-dark bg-white">
+        <br><br><br><br>
+        <div class="product_gallary shadow-lg border">
             here we display images and videos of the product
+            <hr>
+            <div class="product_gallary_main border-dark">
+                {% if product_gallary %}
+                {% set len = product_gallary | length %}
+                {% if (len%3!=0) %}
+                {% set itr = len//3 +1 %}
+                {% else %}
+                {% set itr = len//3 %}
+                {% endif %}
+                {% for i in range(0,itr) %}
+                {% set count = 3*i %}
+                <div class="row">
+                    {% set media = product_gallary[count] %}
+                    {% set url_media = url_for('static',filename='image/gallary/'+media.product_id+'/'+media.media_name) %}
+
+                    <div class="column shadow-lg product_container">
+                        <img src="{{ url_media }}" width="100%">
+                        {% if product_and_owner_description[0].owner_id == user_details[0].user_id %}
+                        <a class="btn btn-dark" href='/delete/product/gallary/{{ media.product_id }}/{{ media.media_name }}'>delete</a>
+                        {% endif %}
+                    </div>
+                    <br>
+
+                    {% if (count+1 < len) %}
+                    {% set media = product_gallary[count+1] %}
+                    {% set url_media = url_for('static',filename='image/gallary/'+media.product_id+'/'+media.media_name) %}
+
+                    <div class="column shadow-lg product_container">
+                        <img src="{{ url_media }}" width="100%">
+                        {% if product_and_owner_description[0].owner_id == user_details[0].user_id %}
+                        <a class="btn btn-dark" href='/delete/product/gallary/{{ media.product_id }}/{{ media.media_name }}'>delete</a>
+                        {% endif %}
+                    </div>
+                    <br>
+                    {% endif %}
+
+                    {% if (count+2 < len) %}
+                    {% set media = product_gallary[count+2] %}
+                    {% set url_media = url_for('static',filename='image/gallary/'+media.product_id+'/'+media.media_name) %}
+
+                    <div class="column shadow-lg product_container">
+                        <img src="{{ url_media }}" width="100%">
+                        {% if product_and_owner_description[0].owner_id == user_details[0].user_id %}
+                        <a class="btn btn-dark" href='/delete/product/gallary/{{ media.product_id }}/{{ media.media_name }}'>delete</a>
+                        {% endif %}
+                    </div>
+                    <br>
+                    {% endif %}
+
+                </div>
+                {% endfor %}
+                {% else %}
+                no media to display
+                {% endif %}
+            </div>
+            {% if product_and_owner_description[0].owner_id == user_details[0].user_id %}
+            <hr>
+            add more about your product
+            <form action="/product_gallary_uploads/{{ product_and_owner_description[0].product_id }}" method="POST"
+                enctype="multipart/form-data">
+                <input type="file" name="file" />
+                <input type="submit" />
+            </form>
+            {% endif %}
         </div>
+
     </div>
 
 
@@ -311,4 +377,5 @@
 </div>
 
 </div>
+
 {% endblock %}

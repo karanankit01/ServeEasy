@@ -5,8 +5,17 @@ import os
 from PIL import Image
 import sys
 import yaml
+import random
+import string
+
+def randomString(stringLength=8):
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(stringLength))
 
 app=Flask(__name__)
+
+local_dir = os.getcwd()
+print(local_dir)
 
 db = yaml.load(open('db.yaml'))
 app.config['MYSQL_HOST'] = db['mysql_host']
@@ -198,7 +207,7 @@ def upload():
 
                 file_extension = os.path.splitext(file_name)[1]
 
-                file_path = "/home/mukul/Desktop/serveEasy/clone2/ServeEasy/ServeEasyApp/static/image/profile_pic/profile"+str(user_id)
+                file_path = local_dir+"/static/image/profile_pic/profile"+str(user_id)
                 new_path = file_path+file_extension
                 file_name = "profile"+str(user_id)+file_extension
 
@@ -254,10 +263,12 @@ def profile():
 
 @app.route('/product/<product_id>',methods=['POST','GET'])
 def product(product_id):
-    try:
+    # try:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute("select * from all_products inner join user on all_products.owner_id = user.user_id inner join product_display_pic on all_products.product_id = product_display_pic.product_id   where all_products.product_id  = %s",[product_id])
         product_and_owner_description = cursor.fetchall()
+        cursor.execute("select * from gallary where product_id  = %s",[product_id])
+        product_gallary = cursor.fetchall()
         # print(product_and_owner_description)
         if 'user_id' in session:
             user_id = session['user_id']
@@ -267,7 +278,7 @@ def product(product_id):
 
                 file_extension = os.path.splitext(file_name)[1]
 
-                file_path = "/home/mukul/Desktop/serveEasy/clone2/ServeEasy/ServeEasyApp/static/image/product_display_pic/product_"+str(product_id)
+                file_path = local_dir+"/static/image/product_display_pic/product_"+str(product_id)
                 new_path = file_path+file_extension
                 file_name = "product_"+str(product_id)+file_extension
 
@@ -292,8 +303,49 @@ def product(product_id):
             cursor.execute(query)
             user_details = cursor.fetchall()
             cursor.close()
-            return render_template('product.html',user_details=user_details,product_and_owner_description=product_and_owner_description)
+            return render_template('product.html',product_gallary=product_gallary,user_details=user_details,product_and_owner_description=product_and_owner_description)
         return redirect('/sign_in')
+    # except Exception as e:
+    #     return str(e)
+
+@app.route('/product_gallary_uploads/<product_id>',methods=['POST','GET'])
+def gallary(product_id):
+    try:
+        if request.method == 'POST':
+            file = request.files['file']
+            file_name = file.filename
+
+            file_extension = os.path.splitext(file_name)[1]
+            if file_extension == '':
+                return redirect('/product/'+str(product_id))
+            file_dir = local_dir + "/static/image/gallary/" + str(product_id)
+
+            if (os.path.isdir(file_dir)==False):
+                os.mkdir(file_dir)
+            file_name = randomString(16) + file_extension
+            file_path = file_dir + "/" + file_name
+            file.save(file_path)
+            print(file_path)
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            query = "insert into gallary value(%s,%s)"
+            cursor.execute(query,[product_id,file_name])
+            mysql.connection.commit()
+            return redirect('/product/'+str(product_id))
+        else:
+            return redirect('/product/'+str(product_id))
+    except Exception as e:
+        return str(e)
+
+@app.route('/delete/product/gallary/<product_id>/<media_name>')
+def delete_from_gallary(product_id,media_name):
+    try:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        query = "delete from gallary where media_name = '"+str(media_name)+"'"
+        cursor.execute(query)
+        mysql.connection.commit()
+        file_dir = local_dir + "/static/image/gallary/"+str(product_id)+"/"+str(media_name)
+        os.remove(file_dir)
+        return redirect('/product/'+str(product_id))
     except Exception as e:
         return str(e)
 
@@ -363,6 +415,7 @@ def freestyle_products():
             cursor.execute(query)
             user_details = cursor.fetchall()
         else:
+            
             user_details=()
         return render_template('freestyle_products.html',user_details=user_details,freestyle_products=freestyle_products)
     except Exception as e:
@@ -402,7 +455,9 @@ def physical_products():
     except Exception as e:
         return str(e)
 
-app.secret_key = os.urandom(16)
+
+
+app.secret_key = 'os.urandom(16)'
 if __name__=='__main__':
     app.run(debug=True)
 
