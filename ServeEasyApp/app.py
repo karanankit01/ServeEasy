@@ -382,7 +382,7 @@ def search():
             query=query+" or LOWER(product_name) LIKE "+"'"+"%"+word.lower()+"%"+"'"
         cursor.execute(query)
         all_products = cursor.fetchall()
-        if len(search) == 0 and search == 'all': 
+        if (len(search) == 0 and search == 'all') or len(all_products)==0: 
             cursor.execute("SELECT * from all_products inner join product_display_pic on all_products.product_id = product_display_pic.product_id")
             all_products = cursor.fetchall()
         return render_template('all_product.html',user_details=user_details,all_products=all_products)
