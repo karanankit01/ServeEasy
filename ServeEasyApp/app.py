@@ -375,8 +375,12 @@ def search():
     if request.method == 'POST':
         search = request.form['search']
         search_spell = spell.correction(search)
+        search_similar = spell.candidates(search)
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute("SELECT * from all_products inner join product_display_pic on all_products.product_id = product_display_pic.product_id WHERE LOWER(product_name) LIKE "+"'"+"%"+search.lower()+"%"+"'"+" or LOWER(product_name) LIKE "+"'"+"%"+search_spell.lower()+"%"+"'")
+        query="SELECT * from all_products inner join product_display_pic on all_products.product_id = product_display_pic.product_id WHERE LOWER(product_name) LIKE "+"'"+"%"+search.lower()+"%"+"'"+" or LOWER(product_name) LIKE "+"'"+"%"+search_spell.lower()+"%"+"'"
+        for word in search_similar:
+            query=query+" or LOWER(product_name) LIKE "+"'"+"%"+word.lower()+"%"+"'"
+        cursor.execute(query)
         all_products = cursor.fetchall()
         if len(search) == 0 and search == 'all': 
             cursor.execute("SELECT * from all_products inner join product_display_pic on all_products.product_id = product_display_pic.product_id")
