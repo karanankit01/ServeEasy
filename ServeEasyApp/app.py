@@ -1,5 +1,6 @@
 from flask import Flask,render_template,request,redirect,url_for,session
 from flask_mysqldb import MySQL
+from spellchecker import SpellChecker 
 import MySQLdb
 import os
 from PIL import Image
@@ -7,6 +8,8 @@ import sys
 import yaml
 import random
 import string
+
+spell = SpellChecker() 
 
 def randomString(stringLength=8):
     letters = string.ascii_lowercase
@@ -367,6 +370,20 @@ def my_products():
     except Exception as e:
         return str(e)
 
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    if request.method == 'POST':
+        search = request.form['search']
+        search_spell = spell.correction(search)
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("SELECT * from all_products inner join product_display_pic on all_products.product_id = product_display_pic.product_id WHERE LOWER(product_name) LIKE "+"'"+"%"+search.lower()+"%"+"'"+" or LOWER(product_name) LIKE "+"'"+"%"+search_spell.lower()+"%"+"'")
+        all_products = cursor.fetchall()
+        if len(search) == 0 and search == 'all': 
+            cursor.execute("SELECT * from all_products inner join product_display_pic on all_products.product_id = product_display_pic.product_id")
+            all_products = cursor.fetchall()
+        return render_template('all_product.html',user_details=user_details,all_products=all_products)
+    return redirect('/product/all')
+
 @app.route('/products/all',methods=['GET'])
 def all_product():
     try:
@@ -381,7 +398,6 @@ def all_product():
             user_details = cursor.fetchall()
         else:
             user_details=()
-        print(user_details)
         return render_template('all_product.html',user_details=user_details,all_products=all_products)
     except Exception as e:
         return str(e)
