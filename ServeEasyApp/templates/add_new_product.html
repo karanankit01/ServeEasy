@@ -63,7 +63,7 @@
 </nav>
 
 <div id="content">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-fixed-top navbar-expand-lg navbar-light bg-ligh">
 
         <!-- <div class="container-fluid"> -->
         <button type="button" id="sidebarCollapse" class="btn btn-info">
@@ -111,15 +111,14 @@
                         <a class="dropdown-item" href="#">Something else here</a>
                     </div>
                 </li>
-                <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <form class="form-inline my-2 my-lg-0" method='POST' action="/search">
+                    <input class="form-control mr-sm-2" name="search" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                 </form>
             </ul>
 
         </div>
         {% if user_details %}
-
         <a class="navbar-brand" href="/profile">My profile</a>
         <a class="navbar-brand" href="/logout">logout</a>
 
