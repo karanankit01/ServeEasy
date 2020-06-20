@@ -99,7 +99,8 @@
                     </div>
                 </li>
                 <form class="form-inline my-2 my-lg-0" method='POST' action="/search">
-                    <input class="form-control mr-sm-2" name="search" type="search" placeholder="Search" aria-label="Search">
+                    <input class="form-control mr-sm-2" name="search" type="search" placeholder="Search"
+                        aria-label="Search">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                 </form>
             </ul>
@@ -124,65 +125,67 @@
         <h1>sign_up page</h1>
         <br>
 
-<form method = "POST" action="/sign_up" id = "signupform">
-{{form.csrf_token}}
-    <fieldset class="name">
-        {{ form.name.label }}
-        {{ form.name() }}
-        {% if form.name.errors %}
-          <ul class="errors">
-            {% for error in form.email.errors %}
-              <li>{{ error }}</li>{% endfor %}
-          </ul>
-        {% endif %}
-      </fieldset>
+        <form method="POST" action="/sign_up" id="signupform">
+            {{form.csrf_token}}
+            <fieldset class="name">
+                {{ form.name.label }}
+                {{ form.name() }}
+                {% if form.name.errors %}
+                <ul class="errors">
+                    {% for error in form.email.errors %}
+                    <li>{{ error }}</li>{% endfor %}
+                </ul>
+                {% endif %}
+            </fieldset>
 
-      <fieldset class="email">
-        {{ form.email.label }}
-        {{ form.email() }}
-        {% if form.email.errors %}
-          <ul class="errors">
-            {% for error in form.email.errors %}
-              <li>{{ error }}</li>{% endfor %}
-          </ul>
-        {% endif %}
-      </fieldset>
+            <fieldset class="email">
+                {{ form.email.label }}
+                {{ form.email() }}
+                {% if form.email.errors %}
+                <ul class="errors">
+                    {% for error in form.email.errors %}
+                    <li>{{ error }}</li>{% endfor %}
+                </ul>
+                {% endif %}
+            </fieldset>
 
-      <fieldset class="password">
-        {{ form.password.label }}
-        {{ form.password }}
-        {% if form.password.errors %}
-          <ul class="errors">
-            {% for error in form.password.errors %}
-              <li>{{ error }}</li>{% endfor %}
-          </ul>
-        {% endif %}
-      </fieldset>
-     <fieldset class="username">
-        {{ form.username.label }}
-        {{ form.username() }}
-        {% if form.username.errors %}
-          <ul class="errors">
-            {% for error in form.username.errors %}
-              <li>{{ error }}</li>{% endfor %}
-          </ul>
-        {% endif %}
-        <span id="availability"></span>
-      </fieldset>
-    <fieldset class="phone">
-        {{ form.phone.label }}
-        {{ form.phone() }}
-        {% if form.phone.errors %}
-          <ul class="errors">
-            {% for error in form.phone.errors %}
-              <li>{{ error }}</li>{% endfor %}
-          </ul>
-        {% endif %}
-      </fieldset>
+            <fieldset class="password">
+                {{ form.password.label }}
+                {{ form.password }}
+                {% if form.password.errors %}
+                <ul class="errors">
+                    {% for error in form.password.errors %}
+                    <li>{{ error }}</li>{% endfor %}
+                </ul>
+                {% endif %}
+            </fieldset>
+            <fieldset class="username">
+                {{ form.username.label }}
+                {{ form.username() }}
+                {% if form.username.errors %}
+                <ul class="errors">
+                    {% for error in form.username.errors %}
+                    <li>{{ error }}</li>{% endfor %}
+                </ul>
+                {% endif %}
+                <span id="availability"></span>
+            </fieldset>
+            <fieldset class="phone">
+                {{ form.phone.label }}
+                {{ form.phone() }}
+                {% if form.phone.errors %}
+                <ul class="errors">
+                    {% for error in form.phone.errors %}
+                    <li>{{ error }}</li>{% endfor %}
+                </ul>
+                {% endif %}
+            </fieldset>
 
-      <div class="submit-button">
-        {{ form.submit }}
-      </div>
+            <div class="submit-button">
+                {{ form.submit }}
+            </div>
+        </form>
+    </div>
 
 
 
@@ -196,7 +199,7 @@
                         <ul>
                             <li>
                                 <a href="/about">About us</a>
-                                
+
                             </li>
                             <li><a href="#">We are hiring</a></li>
                             <li><a href="#">Meet the team</a></li>

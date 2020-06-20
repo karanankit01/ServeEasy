@@ -88,8 +88,7 @@ def user_home():
            # user_id = request.form('user_id')
           #  print(user_id)
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            query = "SELECT name,user_id as username,email,phone,user_id from user where user_id = " + \
-                str(user_id)
+            query = "SELECT name,user_id as username,email,phone,user_id from user where user_id = " + "'"+str(user_id)+"'"
             cursor.execute(query)
             user_details = cursor.fetchall()
             return render_template('home.html', user_details=user_details)
@@ -150,7 +149,7 @@ def sign_in():
             query = "SELECT user_id,password  FROM user WHERE user_id ="+"'"+user_id+"'"
             cursor.execute(query)
             password_id_details = cursor.fetchall()
-        # print(password_id_details)
+            print(password_id_details,len(password_id_details))
             if(len(password_id_details) == 0):
                 return "user dosn't exist try another or sign up"
             else:
