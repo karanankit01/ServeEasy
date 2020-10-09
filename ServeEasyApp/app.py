@@ -26,6 +26,10 @@ mysql = MySQL(app)
 
 
 user_details=()
+@app.route('/')
+def home2():
+    return redirect(url_for('home'))
+    
 @app.route('/home')
 def home():
     if 'user_id' in session:
